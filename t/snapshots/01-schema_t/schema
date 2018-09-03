@@ -32,6 +32,16 @@ schema:
     distributions:
       constraints: []
       fields:
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 1
+          size:
+            - 0
         name:
           data_type: varchar
           default_value: ~
@@ -39,7 +49,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: name
-          order: 1
+          order: 2
           size:
             - 0
         prerequisites:
@@ -49,7 +59,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: prerequisites
-          order: 2
+          order: 3
           size:
             - 0
         version:
@@ -59,7 +69,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: version
-          order: 3
+          order: 4
           size:
             - 0
       indices: []
@@ -69,6 +79,16 @@ schema:
     environments:
       constraints: []
       fields:
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 1
+          size:
+            - 0
         language:
           data_type: varchar
           default_value: ~
@@ -76,7 +96,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: language
-          order: 1
+          order: 2
           size:
             - 0
         system:
@@ -86,7 +106,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: system
-          order: 2
+          order: 3
           size:
             - 0
         toolchain:
@@ -96,7 +116,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: toolchain
-          order: 3
+          order: 4
           size:
             - 0
         user_agent:
@@ -106,7 +126,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: user_agent
-          order: 4
+          order: 5
           size:
             - 0
       indices: []
@@ -136,6 +156,16 @@ schema:
           order: 2
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 3
+          size:
+            - 0
         name:
           data_type: varchar
           default_value: ~
@@ -143,7 +173,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: name
-          order: 3
+          order: 4
           size:
             - 0
         variables:
@@ -153,7 +183,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: variables
-          order: 4
+          order: 5
           size:
             - 0
         version:
@@ -163,7 +193,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: version
-          order: 5
+          order: 6
           size:
             - 0
       indices: []
@@ -203,6 +233,16 @@ schema:
           order: 3
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 4
+          size:
+            - 0
         reporter:
           data_type: varchar
           default_value: ~
@@ -210,7 +250,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: reporter
-          order: 4
+          order: 5
           size:
             - 0
         result:
@@ -220,7 +260,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: result
-          order: 5
+          order: 6
           size:
             - 0
       indices: []
@@ -240,6 +280,16 @@ schema:
           order: 1
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 2
+          size:
+            - 0
         name:
           data_type: varchar
           default_value: ~
@@ -247,7 +297,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: name
-          order: 2
+          order: 3
           size:
             - 0
         need:
@@ -257,7 +307,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: need
-          order: 3
+          order: 4
           size:
             - 0
         phase:
@@ -267,7 +317,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: phase
-          order: 4
+          order: 5
           size:
             - 0
       indices: []
@@ -309,6 +359,16 @@ schema:
           order: 3
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 4
+          size:
+            - 0
         na:
           data_type: int
           default_value: ~
@@ -316,7 +376,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: na
-          order: 4
+          order: 5
           size:
             - 0
         pass:
@@ -326,7 +386,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: pass
-          order: 5
+          order: 6
           size:
             - 0
         unknown:
@@ -336,7 +396,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: unknown
-          order: 6
+          order: 7
           size:
             - 0
         version:
@@ -346,7 +406,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: version
-          order: 7
+          order: 8
           size:
             - 0
       indices: []
@@ -398,6 +458,16 @@ schema:
           order: 4
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 5
+          size:
+            - 0
         osname:
           data_type: varchar
           default_value: ~
@@ -405,7 +475,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: osname
-          order: 5
+          order: 6
           size:
             - 0
         osvers:
@@ -415,7 +485,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: osvers
-          order: 6
+          order: 7
           size:
             - 0
         perl:
@@ -425,7 +495,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: perl
-          order: 7
+          order: 8
           size:
             - 0
         platform:
@@ -435,7 +505,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: platform
-          order: 8
+          order: 9
           size:
             - 0
         reporter:
@@ -445,7 +515,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: reporter
-          order: 9
+          order: 10
           size:
             - 0
         version:
@@ -455,7 +525,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: version
-          order: 10
+          order: 11
           size:
             - 0
       indices: []
@@ -475,6 +545,16 @@ schema:
           order: 1
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 2
+          size:
+            - 0
         name:
           data_type: varchar
           default_value: ~
@@ -482,7 +562,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: name
-          order: 2
+          order: 3
           size:
             - 0
       indices: []
@@ -522,6 +602,16 @@ schema:
           order: 3
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 4
+          size:
+            - 0
         output:
           data_type: varchar
           default_value: ~
@@ -529,7 +619,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: output
-          order: 4
+          order: 5
           size:
             - 0
         skipped:
@@ -539,7 +629,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: skipped
-          order: 5
+          order: 6
           size:
             - 0
         tests:
@@ -549,7 +639,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: tests
-          order: 6
+          order: 7
           size:
             - 0
         todo:
@@ -559,7 +649,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: todo
-          order: 7
+          order: 8
           size:
             - 0
         warnings:
@@ -569,7 +659,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: warnings
-          order: 8
+          order: 9
           size:
             - 0
       indices: []
@@ -629,6 +719,16 @@ schema:
           order: 5
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 6
+          size:
+            - 0
         osname:
           data_type: varchar
           default_value: ~
@@ -636,7 +736,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: osname
-          order: 6
+          order: 7
           size:
             - 0
         osversion:
@@ -646,7 +746,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: osversion
-          order: 7
+          order: 8
           size:
             - 0
         variables:
@@ -656,7 +756,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: variables
-          order: 8
+          order: 9
           size:
             - 0
       indices: []
@@ -688,6 +788,16 @@ schema:
           order: 2
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 3
+          size:
+            - 0
         install:
           data_type: varchar
           default_value: ~
@@ -695,7 +805,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: install
-          order: 3
+          order: 4
           size:
             - 0
         test:
@@ -705,7 +815,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: test
-          order: 4
+          order: 5
           size:
             - 0
         uncategorized:
@@ -715,7 +825,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: uncategorized
-          order: 5
+          order: 6
           size:
             - 0
       indices: []
@@ -757,6 +867,16 @@ schema:
           order: 3
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 4
+          size:
+            - 0
         released:
           data_type: datetime
           default_value: ~
@@ -764,7 +884,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: released
-          order: 4
+          order: 5
           size:
             - 0
         version:
@@ -774,7 +894,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: version
-          order: 5
+          order: 6
           size:
             - 0
       indices: []

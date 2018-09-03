@@ -116,6 +116,10 @@ sub _def2table {
   my $table = $schema->add_table(
     name => $tname, comments => $def->{description},
   );
+  if (!$props->{id}) {
+    # we need a relational id
+    $props->{id} = { type => 'integer' };
+  }
   for my $propname (sort keys %$props) {
     my $sqltype = _prop2sqltype($props->{$propname});
     my $field = $table->add_field(name => $propname, data_type => $sqltype);

@@ -15,6 +15,16 @@ schema:
           order: 1
           size:
             - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 2
+          size:
+            - 0
         message:
           data_type: varchar
           default_value: ~
@@ -22,7 +32,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: message
-          order: 2
+          order: 3
           size:
             - 0
       indices: []
@@ -32,6 +42,16 @@ schema:
     new_pets:
       constraints: []
       fields:
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 1
+          size:
+            - 0
         name:
           data_type: varchar
           default_value: ~
@@ -39,7 +59,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: name
-          order: 1
+          order: 2
           size:
             - 0
         tag:
@@ -49,7 +69,7 @@ schema:
           is_primary_key: 0
           is_unique: 0
           name: tag
-          order: 2
+          order: 3
           size:
             - 0
       indices: []
