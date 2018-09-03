@@ -8,6 +8,7 @@ our $VERSION = "0.01";
 use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
 use String::CamelCase qw(camelize decamelize wordsplit);
 use Lingua::EN::Inflect::Number qw(to_PL);
+use SQL::Translator::Schema::Constants;
 
 my %TYPE2SQL = (
   integer => 'int',
@@ -108,6 +109,22 @@ sub _prop2sqltype {
   $lookup || 'varchar';
 }
 
+sub _make_not_null {
+  my ($table, $field) = @_;
+  $field->is_nullable(0);
+  $table->add_constraint(type => $_, fields => [ 'id' ])
+    for (NOT_NULL);
+}
+
+sub _make_pk {
+  my ($table, $field) = @_;
+  $field->is_primary_key(1);
+  $field->is_auto_increment(1);
+  $table->add_constraint(type => $_, fields => [ 'id' ])
+    for (PRIMARY_KEY, UNIQUE);
+  _make_not_null($table, $field);
+}
+
 sub _def2table {
   my ($name, $def, $schema) = @_;
   my $props = $def->{properties};
@@ -123,6 +140,9 @@ sub _def2table {
   for my $propname (sort keys %$props) {
     my $sqltype = _prop2sqltype($props->{$propname});
     my $field = $table->add_field(name => $propname, data_type => $sqltype);
+    if ($propname eq 'id') {
+      _make_pk($table, $field);
+    }
   }
   $table;
 }

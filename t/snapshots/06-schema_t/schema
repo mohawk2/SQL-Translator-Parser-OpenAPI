@@ -3,7 +3,43 @@ schema:
   procedures: {}
   tables:
     articles:
-      constraints: []
+      constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: UNIQUE
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         author:
           data_type: varchar
@@ -68,9 +104,10 @@ schema:
         id:
           data_type: int
           default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 1
           name: id
           order: 7
           size:
@@ -120,7 +157,43 @@ schema:
       options: []
       order: 1
     comments:
-      constraints: []
+      constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: UNIQUE
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         author:
           data_type: varchar
@@ -155,9 +228,10 @@ schema:
         id:
           data_type: int
           default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 1
           name: id
           order: 4
           size:
@@ -177,7 +251,43 @@ schema:
       options: []
       order: 2
     multiple_articles_responses:
-      constraints: []
+      constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: UNIQUE
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         articles:
           data_type: varchar
@@ -202,9 +312,10 @@ schema:
         id:
           data_type: int
           default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 1
           name: id
           order: 3
           size:
@@ -214,7 +325,43 @@ schema:
       options: []
       order: 3
     new_users:
-      constraints: []
+      constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: UNIQUE
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         email:
           data_type: varchar
@@ -229,9 +376,10 @@ schema:
         id:
           data_type: int
           default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 1
           name: id
           order: 2
           size:
@@ -261,7 +409,43 @@ schema:
       options: []
       order: 4
     profiles:
-      constraints: []
+      constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: UNIQUE
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         bio:
           data_type: varchar
@@ -286,9 +470,10 @@ schema:
         id:
           data_type: int
           default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 1
           name: id
           order: 3
           size:
@@ -318,7 +503,43 @@ schema:
       options: []
       order: 5
     users:
-      constraints: []
+      constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: UNIQUE
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         bio:
           data_type: varchar
@@ -343,9 +564,10 @@ schema:
         id:
           data_type: int
           default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 1
           name: id
           order: 3
           size:
