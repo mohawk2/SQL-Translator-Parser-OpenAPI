@@ -106,7 +106,7 @@ sub _prop2sqltype {
   my $format_type = $prop->{format} || $prop->{type};
   my $lookup = $TYPE2SQL{$format_type || ''};
   DEBUG and _debug("_prop2sqltype($format_type)($lookup)", $prop);
-  $lookup || 'varchar';
+  $lookup;
 }
 
 sub _make_not_null {
@@ -125,10 +125,41 @@ sub _make_pk {
   _make_not_null($table, $field);
 }
 
+sub _def2tablename {
+  to_PL decamelize $_[0];
+}
+
+sub _ref2def {
+  my ($ref) = @_;
+  $ref =~ s:^#/definitions/:: or return;
+  $ref;
+}
+
+sub _make_fk {
+  my ($table, $field, $foreign_tablename, $foreign_id) = @_;
+  $table->add_constraint(
+    type => FOREIGN_KEY, fields => $field,
+    reference_table => $foreign_tablename,
+    reference_fields => $foreign_id,
+  );
+}
+
+sub _fk_hookup {
+  my ($table, $propname, $ref) = @_;
+  my $fk_id = $propname . '_id';
+  my $foreign_ref = _ref2def($ref);
+  DEBUG and _debug("_def2table($propname)($fk_id)(ref)($foreign_ref)", $ref);
+  my $foreign_table = _def2tablename($foreign_ref);
+  DEBUG and _debug("ref($foreign_table)");
+  my $field = $table->add_field(name => $fk_id, data_type => 'int');
+  _make_fk($table, $field, $foreign_table, 'id');
+  $field;
+}
+
 sub _def2table {
   my ($name, $def, $schema) = @_;
   my $props = $def->{properties};
-  my $tname = to_PL decamelize $name;
+  my $tname = _def2tablename($name);
   DEBUG and _debug("_def2table($name)($tname)", $props);
   my $table = $schema->add_table(
     name => $tname, comments => $def->{description},
@@ -139,11 +170,18 @@ sub _def2table {
   }
   my %prop2required = map { ($_ => 1) } @{ $def->{required} || [] };
   for my $propname (sort keys %$props) {
-    my $sqltype = _prop2sqltype($props->{$propname});
-    my $field = $table->add_field(name => $propname, data_type => $sqltype);
-    if ($propname eq 'id') {
-      _make_pk($table, $field);
-    } elsif ($prop2required{$propname}) {
+    my $field;
+    DEBUG and _debug("_def2table($propname)");
+    if (my $ref = $props->{$propname}{'$ref'}) {
+      $field = _fk_hookup($table, $propname, $ref);
+    } else {
+      my $sqltype = _prop2sqltype($props->{$propname});
+      $field = $table->add_field(name => $propname, data_type => $sqltype);
+      if ($propname eq 'id') {
+        _make_pk($table, $field);
+      }
+    }
+    if ($prop2required{$propname} and $propname ne 'id') {
       _make_not_null($table, $field);
     }
   }

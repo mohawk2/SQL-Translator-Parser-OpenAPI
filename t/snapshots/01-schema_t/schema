@@ -151,7 +151,7 @@ schema:
           size:
             - 0
         prerequisites:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 1
           is_primary_key: 0
@@ -215,7 +215,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - language
+            - language_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: languages
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - language_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -227,7 +240,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - system
+            - system_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: systems
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - system_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -248,28 +274,28 @@ schema:
           order: 1
           size:
             - 0
-        language:
-          data_type: varchar
+        language_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: language
+          name: language_id
           order: 2
           size:
             - 0
-        system:
-          data_type: varchar
+        system_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: system
+          name: system_id
           order: 3
           size:
             - 0
         toolchain:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 1
           is_primary_key: 0
@@ -409,7 +435,7 @@ schema:
           size:
             - 0
         variables:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 1
           is_primary_key: 0
@@ -437,7 +463,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - distribution
+            - distribution_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: distributions
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - distribution_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -449,7 +488,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - environment
+            - environment_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: environments
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - environment_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -497,7 +549,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - reporter
+            - reporter_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: reporters
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - reporter_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -509,7 +574,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - result
+            - result_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: results
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - result_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -520,7 +598,7 @@ schema:
           type: NOT NULL
       fields:
         comments:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 1
           is_primary_key: 0
@@ -529,23 +607,23 @@ schema:
           order: 1
           size:
             - 0
-        distribution:
-          data_type: varchar
+        distribution_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: distribution
+          name: distribution_id
           order: 2
           size:
             - 0
-        environment:
-          data_type: varchar
+        environment_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: environment
+          name: environment_id
           order: 3
           size:
             - 0
@@ -560,23 +638,23 @@ schema:
           order: 4
           size:
             - 0
-        reporter:
-          data_type: varchar
+        reporter_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: reporter
+          name: reporter_id
           order: 5
           size:
             - 0
-        result:
-          data_type: varchar
+        result_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: result
+          name: result_id
           order: 6
           size:
             - 0
@@ -847,6 +925,19 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
+            - grade_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: grades
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
             - id
           match_type: \'\'
           name: \'\'
@@ -901,13 +992,13 @@ schema:
           order: 2
           size:
             - 0
-        grade:
-          data_type: varchar
+        grade_id:
+          data_type: int
           default_value: ~
           is_nullable: 1
           is_primary_key: 0
           is_unique: 0
-          name: grade
+          name: grade_id
           order: 3
           size:
             - 0
@@ -1087,7 +1178,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - grade
+            - grade_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: grades
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - grade_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -1135,7 +1239,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - output
+            - output_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: test_outputs
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - output_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -1165,13 +1282,13 @@ schema:
           order: 2
           size:
             - 0
-        grade:
-          data_type: varchar
+        grade_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: grade
+          name: grade_id
           order: 3
           size:
             - 0
@@ -1186,13 +1303,13 @@ schema:
           order: 4
           size:
             - 0
-        output:
-          data_type: varchar
+        output_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: output
+          name: output_id
           order: 5
           size:
             - 0
@@ -1217,7 +1334,7 @@ schema:
           size:
             - 0
         todo:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 1
           is_primary_key: 0
@@ -1373,7 +1490,7 @@ schema:
           size:
             - 0
         variables:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 1
           is_primary_key: 0

@@ -195,6 +195,19 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
+            - category_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: categories
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
             - id
           match_type: \'\'
           name: \'\'
@@ -253,13 +266,13 @@ schema:
           reference_table: \'\'
           type: NOT NULL
       fields:
-        category:
-          data_type: varchar
+        category_id:
+          data_type: int
           default_value: ~
           is_nullable: 1
           is_primary_key: 0
           is_unique: 0
-          name: category
+          name: category_id
           order: 1
           size:
             - 0
@@ -285,7 +298,7 @@ schema:
           size:
             - 0
         photoUrls:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
@@ -305,7 +318,7 @@ schema:
           size:
             - 0
         tags:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 1
           is_primary_key: 0

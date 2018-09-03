@@ -7,7 +7,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - author
+            - author_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: profiles
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - author_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -161,13 +174,13 @@ schema:
           reference_table: \'\'
           type: NOT NULL
       fields:
-        author:
-          data_type: varchar
+        author_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: author
+          name: author_id
           order: 1
           size:
             - 0
@@ -243,7 +256,7 @@ schema:
           size:
             - 0
         tagList:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
@@ -281,7 +294,20 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
-            - author
+            - author_id
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields:
+            - id
+          reference_table: profiles
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - author_id
           match_type: \'\'
           name: \'\'
           on_delete: \'\'
@@ -363,13 +389,13 @@ schema:
           reference_table: \'\'
           type: NOT NULL
       fields:
-        author:
-          data_type: varchar
+        author_id:
+          data_type: int
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
           is_unique: 0
-          name: author
+          name: author_id
           order: 1
           size:
             - 0
@@ -482,7 +508,7 @@ schema:
           type: NOT NULL
       fields:
         articles:
-          data_type: varchar
+          data_type: \'\'
           default_value: ~
           is_nullable: 0
           is_primary_key: 0
