@@ -1,0 +1,796 @@
+'---
+schema:
+  procedures: {}
+  tables:
+    accepted_reports:
+      constraints: []
+      fields:
+        id:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 1
+          size:
+            - 0
+        status:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: status
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: accepted_reports
+      options: []
+      order: 1
+    distributions:
+      constraints: []
+      fields:
+        name:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: name
+          order: 1
+          size:
+            - 0
+        prerequisites:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: prerequisites
+          order: 2
+          size:
+            - 0
+        version:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: version
+          order: 3
+          size:
+            - 0
+      indices: []
+      name: distributions
+      options: []
+      order: 2
+    environments:
+      constraints: []
+      fields:
+        language:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: language
+          order: 1
+          size:
+            - 0
+        system:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: system
+          order: 2
+          size:
+            - 0
+        toolchain:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: toolchain
+          order: 3
+          size:
+            - 0
+        user_agent:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: user_agent
+          order: 4
+          size:
+            - 0
+      indices: []
+      name: environments
+      options: []
+      order: 3
+    languages:
+      constraints: []
+      fields:
+        archname:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: archname
+          order: 1
+          size:
+            - 0
+        build:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: build
+          order: 2
+          size:
+            - 0
+        name:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: name
+          order: 3
+          size:
+            - 0
+        variables:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: variables
+          order: 4
+          size:
+            - 0
+        version:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: version
+          order: 5
+          size:
+            - 0
+      indices: []
+      name: languages
+      options: []
+      order: 4
+    new_reports:
+      constraints: []
+      fields:
+        comments:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: comments
+          order: 1
+          size:
+            - 0
+        distribution:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: distribution
+          order: 2
+          size:
+            - 0
+        environment:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: environment
+          order: 3
+          size:
+            - 0
+        reporter:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: reporter
+          order: 4
+          size:
+            - 0
+        result:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: result
+          order: 5
+          size:
+            - 0
+      indices: []
+      name: new_reports
+      options: []
+      order: 5
+    prerequisites:
+      constraints: []
+      fields:
+        have:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: have
+          order: 1
+          size:
+            - 0
+        name:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: name
+          order: 2
+          size:
+            - 0
+        need:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: need
+          order: 3
+          size:
+            - 0
+        phase:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: phase
+          order: 4
+          size:
+            - 0
+      indices: []
+      name: prerequisites
+      options: []
+      order: 6
+    releases:
+      comments:
+        - A summary of test reports for a single CPAN release
+      constraints: []
+      fields:
+        author:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: author
+          order: 1
+          size:
+            - 0
+        dist:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: dist
+          order: 2
+          size:
+            - 0
+        fail:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: fail
+          order: 3
+          size:
+            - 0
+        na:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: na
+          order: 4
+          size:
+            - 0
+        pass:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: pass
+          order: 5
+          size:
+            - 0
+        unknown:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: unknown
+          order: 6
+          size:
+            - 0
+        version:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: version
+          order: 7
+          size:
+            - 0
+      indices: []
+      name: releases
+      options: []
+      order: 7
+    report_summaries:
+      comments:
+        - Flattened summary data from the test report data structure
+      constraints: []
+      fields:
+        date:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: date
+          order: 1
+          size:
+            - 0
+        dist:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: dist
+          order: 2
+          size:
+            - 0
+        grade:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: grade
+          order: 3
+          size:
+            - 0
+        guid:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: guid
+          order: 4
+          size:
+            - 0
+        osname:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: osname
+          order: 5
+          size:
+            - 0
+        osvers:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: osvers
+          order: 6
+          size:
+            - 0
+        perl:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: perl
+          order: 7
+          size:
+            - 0
+        platform:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: platform
+          order: 8
+          size:
+            - 0
+        reporter:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: reporter
+          order: 9
+          size:
+            - 0
+        version:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: version
+          order: 10
+          size:
+            - 0
+      indices: []
+      name: report_summaries
+      options: []
+      order: 8
+    reporters:
+      constraints: []
+      fields:
+        email:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: email
+          order: 1
+          size:
+            - 0
+        name:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: name
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: reporters
+      options: []
+      order: 9
+    results:
+      constraints: []
+      fields:
+        duration:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: duration
+          order: 1
+          size:
+            - 0
+        failures:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: failures
+          order: 2
+          size:
+            - 0
+        grade:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: grade
+          order: 3
+          size:
+            - 0
+        output:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: output
+          order: 4
+          size:
+            - 0
+        skipped:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: skipped
+          order: 5
+          size:
+            - 0
+        tests:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: tests
+          order: 6
+          size:
+            - 0
+        todo:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: todo
+          order: 7
+          size:
+            - 0
+        warnings:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: warnings
+          order: 8
+          size:
+            - 0
+      indices: []
+      name: results
+      options: []
+      order: 10
+    systems:
+      constraints: []
+      fields:
+        cpu_count:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: cpu_count
+          order: 1
+          size:
+            - 0
+        cpu_description:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: cpu_description
+          order: 2
+          size:
+            - 0
+        cpu_type:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: cpu_type
+          order: 3
+          size:
+            - 0
+        filesystem:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: filesystem
+          order: 4
+          size:
+            - 0
+        hostname:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: hostname
+          order: 5
+          size:
+            - 0
+        osname:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: osname
+          order: 6
+          size:
+            - 0
+        osversion:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: osversion
+          order: 7
+          size:
+            - 0
+        variables:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: variables
+          order: 8
+          size:
+            - 0
+      indices: []
+      name: systems
+      options: []
+      order: 11
+    test_outputs:
+      comments:
+        - At least one of the properties must be set
+      constraints: []
+      fields:
+        build:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: build
+          order: 1
+          size:
+            - 0
+        configure:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: configure
+          order: 2
+          size:
+            - 0
+        install:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: install
+          order: 3
+          size:
+            - 0
+        test:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: test
+          order: 4
+          size:
+            - 0
+        uncategorized:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: uncategorized
+          order: 5
+          size:
+            - 0
+      indices: []
+      name: test_outputs
+      options: []
+      order: 12
+    uploads:
+      comments:
+        - A release to CPAN
+      constraints: []
+      fields:
+        author:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: author
+          order: 1
+          size:
+            - 0
+        dist:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: dist
+          order: 2
+          size:
+            - 0
+        filename:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: filename
+          order: 3
+          size:
+            - 0
+        released:
+          data_type: datetime
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: released
+          order: 4
+          size:
+            - 0
+        version:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: version
+          order: 5
+          size:
+            - 0
+      indices: []
+      name: uploads
+      options: []
+      order: 13
+  triggers: {}
+  views: {}
+translator:
+  add_drop_table: 0
+  filename: t/01-corpus.json
+  no_comments: 0
+  parser_args: {}
+  parser_type: SQL::Translator::Parser::OpenAPI
+  producer_args: {}
+  producer_type: SQL::Translator::Producer::YAML
+  show_warnings: 0
+  trace: 0
+'

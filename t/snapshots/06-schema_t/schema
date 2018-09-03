@@ -1,0 +1,349 @@
+'---
+schema:
+  procedures: {}
+  tables:
+    articles:
+      constraints: []
+      fields:
+        author:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: author
+          order: 1
+          size:
+            - 0
+        body:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: body
+          order: 2
+          size:
+            - 0
+        createdAt:
+          data_type: datetime
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: createdAt
+          order: 3
+          size:
+            - 0
+        description:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: description
+          order: 4
+          size:
+            - 0
+        favorited:
+          data_type: bit
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: favorited
+          order: 5
+          size:
+            - 0
+        favoritesCount:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: favoritesCount
+          order: 6
+          size:
+            - 0
+        slug:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: slug
+          order: 7
+          size:
+            - 0
+        tagList:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: tagList
+          order: 8
+          size:
+            - 0
+        title:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: title
+          order: 9
+          size:
+            - 0
+        updatedAt:
+          data_type: datetime
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: updatedAt
+          order: 10
+          size:
+            - 0
+      indices: []
+      name: articles
+      options: []
+      order: 1
+    comments:
+      constraints: []
+      fields:
+        author:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: author
+          order: 1
+          size:
+            - 0
+        body:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: body
+          order: 2
+          size:
+            - 0
+        createdAt:
+          data_type: datetime
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: createdAt
+          order: 3
+          size:
+            - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: id
+          order: 4
+          size:
+            - 0
+        updatedAt:
+          data_type: datetime
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: updatedAt
+          order: 5
+          size:
+            - 0
+      indices: []
+      name: comments
+      options: []
+      order: 2
+    multiple_articles_responses:
+      constraints: []
+      fields:
+        articles:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: articles
+          order: 1
+          size:
+            - 0
+        articlesCount:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: articlesCount
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: multiple_articles_responses
+      options: []
+      order: 3
+    new_users:
+      constraints: []
+      fields:
+        email:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: email
+          order: 1
+          size:
+            - 0
+        password:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: password
+          order: 2
+          size:
+            - 0
+        username:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: username
+          order: 3
+          size:
+            - 0
+      indices: []
+      name: new_users
+      options: []
+      order: 4
+    profiles:
+      constraints: []
+      fields:
+        bio:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: bio
+          order: 1
+          size:
+            - 0
+        following:
+          data_type: bit
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: following
+          order: 2
+          size:
+            - 0
+        image:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: image
+          order: 3
+          size:
+            - 0
+        username:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: username
+          order: 4
+          size:
+            - 0
+      indices: []
+      name: profiles
+      options: []
+      order: 5
+    users:
+      constraints: []
+      fields:
+        bio:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: bio
+          order: 1
+          size:
+            - 0
+        email:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: email
+          order: 2
+          size:
+            - 0
+        image:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: image
+          order: 3
+          size:
+            - 0
+        token:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: token
+          order: 4
+          size:
+            - 0
+        username:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: username
+          order: 5
+          size:
+            - 0
+      indices: []
+      name: users
+      options: []
+      order: 6
+  triggers: {}
+  views: {}
+translator:
+  add_drop_table: 0
+  filename: t/06-corpus.json
+  no_comments: 0
+  parser_args: {}
+  parser_type: SQL::Translator::Parser::OpenAPI
+  producer_args: {}
+  producer_type: SQL::Translator::Producer::YAML
+  show_warnings: 0
+  trace: 0
+'

@@ -1,0 +1,71 @@
+'---
+schema:
+  procedures: {}
+  tables:
+    errors:
+      constraints: []
+      fields:
+        code:
+          data_type: int
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: code
+          order: 1
+          size:
+            - 0
+        message:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: message
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: errors
+      options: []
+      order: 1
+    new_pets:
+      constraints: []
+      fields:
+        name:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: name
+          order: 1
+          size:
+            - 0
+        tag:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: tag
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: new_pets
+      options: []
+      order: 2
+  triggers: {}
+  views: {}
+translator:
+  add_drop_table: 0
+  filename: t/03-corpus.json
+  no_comments: 0
+  parser_args: {}
+  parser_type: SQL::Translator::Parser::OpenAPI
+  producer_args: {}
+  producer_type: SQL::Translator::Producer::YAML
+  show_warnings: 0
+  trace: 0
+'
