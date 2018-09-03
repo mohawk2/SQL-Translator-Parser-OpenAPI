@@ -104,6 +104,30 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - name
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - version
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         id:
           data_type: int
@@ -119,7 +143,7 @@ schema:
         name:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: name
@@ -139,7 +163,7 @@ schema:
         version:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: version
@@ -188,6 +212,30 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - language
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - system
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         id:
           data_type: int
@@ -203,7 +251,7 @@ schema:
         language:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: language
@@ -213,7 +261,7 @@ schema:
         system:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: system
@@ -249,6 +297,18 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
+            - archname
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
             - id
           match_type: \'\'
           name: \'\'
@@ -282,11 +342,35 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - name
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - version
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         archname:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: archname
@@ -317,7 +401,7 @@ schema:
         name:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: name
@@ -337,7 +421,7 @@ schema:
         version:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: version
@@ -350,6 +434,30 @@ schema:
       order: 4
     new_reports:
       constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - distribution
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - environment
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
         - deferrable: 1
           expression: \'\'
           fields:
@@ -386,6 +494,30 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - reporter
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - result
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         comments:
           data_type: varchar
@@ -400,7 +532,7 @@ schema:
         distribution:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: distribution
@@ -410,7 +542,7 @@ schema:
         environment:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: environment
@@ -431,7 +563,7 @@ schema:
         reporter:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: reporter
@@ -441,7 +573,7 @@ schema:
         result:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: result
@@ -490,6 +622,42 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - name
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - need
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - phase
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         have:
           data_type: varchar
@@ -515,7 +683,7 @@ schema:
         name:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: name
@@ -525,7 +693,7 @@ schema:
         need:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: need
@@ -535,7 +703,7 @@ schema:
         phase:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: phase
@@ -833,6 +1001,18 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
+            - email
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
             - id
           match_type: \'\'
           name: \'\'
@@ -870,7 +1050,7 @@ schema:
         email:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: email
@@ -907,6 +1087,18 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
+            - grade
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
             - id
           match_type: \'\'
           name: \'\'
@@ -940,6 +1132,18 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - output
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         duration:
           data_type: int
@@ -964,7 +1168,7 @@ schema:
         grade:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: grade
@@ -985,7 +1189,7 @@ schema:
         output:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: output
@@ -1074,6 +1278,18 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - osname
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         cpu_count:
           data_type: varchar
@@ -1139,7 +1355,7 @@ schema:
         osname:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: osname

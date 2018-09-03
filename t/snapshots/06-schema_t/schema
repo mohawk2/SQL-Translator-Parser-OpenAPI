@@ -7,6 +7,78 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
+            - author
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - body
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - createdAt
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - description
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - favorited
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - favoritesCount
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
             - id
           match_type: \'\'
           name: \'\'
@@ -40,11 +112,59 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - slug
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - tagList
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - title
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - updatedAt
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         author:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: author
@@ -54,7 +174,7 @@ schema:
         body:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: body
@@ -64,7 +184,7 @@ schema:
         createdAt:
           data_type: datetime
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: createdAt
@@ -74,7 +194,7 @@ schema:
         description:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: description
@@ -84,7 +204,7 @@ schema:
         favorited:
           data_type: bit
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: favorited
@@ -94,7 +214,7 @@ schema:
         favoritesCount:
           data_type: int
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: favoritesCount
@@ -115,7 +235,7 @@ schema:
         slug:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: slug
@@ -125,7 +245,7 @@ schema:
         tagList:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: tagList
@@ -135,7 +255,7 @@ schema:
         title:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: title
@@ -145,7 +265,7 @@ schema:
         updatedAt:
           data_type: datetime
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: updatedAt
@@ -158,6 +278,42 @@ schema:
       order: 1
     comments:
       constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - author
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - body
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - createdAt
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
         - deferrable: 1
           expression: \'\'
           fields:
@@ -194,11 +350,23 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - updatedAt
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         author:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: author
@@ -208,7 +376,7 @@ schema:
         body:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: body
@@ -218,7 +386,7 @@ schema:
         createdAt:
           data_type: datetime
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: createdAt
@@ -239,7 +407,7 @@ schema:
         updatedAt:
           data_type: datetime
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: updatedAt
@@ -252,6 +420,30 @@ schema:
       order: 2
     multiple_articles_responses:
       constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - articles
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - articlesCount
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
         - deferrable: 1
           expression: \'\'
           fields:
@@ -292,7 +484,7 @@ schema:
         articles:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: articles
@@ -302,7 +494,7 @@ schema:
         articlesCount:
           data_type: int
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: articlesCount
@@ -329,6 +521,18 @@ schema:
         - deferrable: 1
           expression: \'\'
           fields:
+            - email
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
             - id
           match_type: \'\'
           name: \'\'
@@ -362,11 +566,35 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - password
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - username
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         email:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: email
@@ -387,7 +615,7 @@ schema:
         password:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: password
@@ -397,7 +625,7 @@ schema:
         username:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: username
@@ -410,6 +638,30 @@ schema:
       order: 4
     profiles:
       constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - bio
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - following
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
         - deferrable: 1
           expression: \'\'
           fields:
@@ -446,11 +698,35 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - image
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - username
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         bio:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: bio
@@ -460,7 +736,7 @@ schema:
         following:
           data_type: bit
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: following
@@ -481,7 +757,7 @@ schema:
         image:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: image
@@ -491,7 +767,7 @@ schema:
         username:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: username
@@ -504,6 +780,30 @@ schema:
       order: 5
     users:
       constraints:
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - bio
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - email
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
         - deferrable: 1
           expression: \'\'
           fields:
@@ -540,11 +840,47 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - image
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - token
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
+        - deferrable: 1
+          expression: \'\'
+          fields:
+            - username
+          match_type: \'\'
+          name: \'\'
+          on_delete: \'\'
+          on_update: \'\'
+          options: []
+          reference_fields: []
+          reference_table: \'\'
+          type: NOT NULL
       fields:
         bio:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: bio
@@ -554,7 +890,7 @@ schema:
         email:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: email
@@ -575,7 +911,7 @@ schema:
         image:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: image
@@ -585,7 +921,7 @@ schema:
         token:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: token
@@ -595,7 +931,7 @@ schema:
         username:
           data_type: varchar
           default_value: ~
-          is_nullable: 1
+          is_nullable: 0
           is_primary_key: 0
           is_unique: 0
           name: username

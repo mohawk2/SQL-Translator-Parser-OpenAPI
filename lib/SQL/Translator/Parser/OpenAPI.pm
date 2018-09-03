@@ -112,7 +112,7 @@ sub _prop2sqltype {
 sub _make_not_null {
   my ($table, $field) = @_;
   $field->is_nullable(0);
-  $table->add_constraint(type => $_, fields => [ 'id' ])
+  $table->add_constraint(type => $_, fields => $field)
     for (NOT_NULL);
 }
 
@@ -120,7 +120,7 @@ sub _make_pk {
   my ($table, $field) = @_;
   $field->is_primary_key(1);
   $field->is_auto_increment(1);
-  $table->add_constraint(type => $_, fields => [ 'id' ])
+  $table->add_constraint(type => $_, fields => $field)
     for (PRIMARY_KEY, UNIQUE);
   _make_not_null($table, $field);
 }
@@ -137,11 +137,14 @@ sub _def2table {
     # we need a relational id
     $props->{id} = { type => 'integer' };
   }
+  my %prop2required = map { ($_ => 1) } @{ $def->{required} || [] };
   for my $propname (sort keys %$props) {
     my $sqltype = _prop2sqltype($props->{$propname});
     my $field = $table->add_field(name => $propname, data_type => $sqltype);
     if ($propname eq 'id') {
       _make_pk($table, $field);
+    } elsif ($prop2required{$propname}) {
+      _make_not_null($table, $field);
     }
   }
   $table;
