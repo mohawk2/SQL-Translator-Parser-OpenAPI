@@ -22,6 +22,7 @@ WriteMakefile(
   PREREQ_PM => {
     'JSON::Validator' => '2.01', # fqn bundle fix
     'String::CamelCase' => '0',
+    'SQL::Translator::Schema::Constants' => 0,
     'Lingua::EN::Inflect::Number' => '0',
   },
   clean => { FILES => 'SQL-Translator-Parser-OpenAPI-*' },
