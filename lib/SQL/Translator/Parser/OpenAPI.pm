@@ -174,6 +174,9 @@ sub _def2table {
     DEBUG and _debug("_def2table($propname)");
     if (my $ref = $props->{$propname}{'$ref'}) {
       $field = _fk_hookup($table, $propname, $ref);
+    } elsif (($props->{$propname}{type} // '') eq 'array') {
+      # if $ref, inject FK into it pointing at us
+      # if simple type, make a table with that and FK it to us
     } else {
       my $sqltype = _prop2sqltype($props->{$propname});
       $field = $table->add_field(name => $propname, data_type => $sqltype);
@@ -181,7 +184,7 @@ sub _def2table {
         _make_pk($table, $field);
       }
     }
-    if ($prop2required{$propname} and $propname ne 'id') {
+    if ($field and $prop2required{$propname} and $propname ne 'id') {
       _make_not_null($table, $field);
     }
   }
