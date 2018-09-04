@@ -15,11 +15,10 @@ WriteMakefile(
   },
   TEST_REQUIRES => {
     'Test::More' => '0.98',
-    'JSON::Validator' => '2.01', # fqn bundle fix
     'Test::Snapshot' => '0.02', # better snapshot filenames
-    'SQL::Translator' => '0',
   },
   PREREQ_PM => {
+    'SQL::Translator' => '0.11024', # 0.11021 gives YAML diffs on "comments"
     'JSON::Validator' => '2.01', # fqn bundle fix
     'String::CamelCase' => '0',
     'SQL::Translator::Schema::Constants' => 0,
