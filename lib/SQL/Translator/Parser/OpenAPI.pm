@@ -50,12 +50,9 @@ sub _strip_thin {
 
 # heuristic 2: find objects with same propnames, drop those with longer names
 sub _strip_dup {
-  my ($defs) = @_;
-  my %name2sig = map {
-    ($_ => join "\0", sort keys %{ $defs->{$_}{properties} })
-  } keys %$defs;
+  my ($defs, $def2mask) = @_;
   my %sig2names;
-  push @{ $sig2names{$name2sig{$_}} }, $_ for keys %name2sig;
+  push @{ $sig2names{$def2mask->{$_}} }, $_ for keys %$def2mask;
   DEBUG and _debug("OpenAPI sig2names", \%sig2names);
   my @nondups = grep @{ $sig2names{$_} } == 1, keys %sig2names;
   delete @sig2names{@nondups};
@@ -100,8 +97,7 @@ sub defs2mask {
 # heuristic 3: find objects with set of propnames that is subset of
 #   another object's propnames
 sub _strip_subset {
-  my ($defs) = @_;
-  my $def2mask = defs2mask($defs);
+  my ($defs, $def2mask) = @_;
   my %subsets;
   for my $defname (keys %$defs) {
     my $thismask = $def2mask->{$defname};
@@ -214,10 +210,11 @@ sub parse {
   my @thin = _strip_thin(\%defs);
   DEBUG and _debug("thin ret", \@thin);
   delete @defs{@thin};
-  my @dup = _strip_dup(\%defs);
+  my $def2mask = defs2mask(\%defs);
+  my @dup = _strip_dup(\%defs, $def2mask);
   DEBUG and _debug("dup ret", \@dup);
   delete @defs{@dup};
-  my @subset = _strip_subset(\%defs);
+  my @subset = _strip_subset(\%defs, $def2mask);
   DEBUG and _debug("dup subset", [ sort @subset ]);
   delete @defs{@subset};
   DEBUG and _debug("remaining", [ sort keys %defs ]);
