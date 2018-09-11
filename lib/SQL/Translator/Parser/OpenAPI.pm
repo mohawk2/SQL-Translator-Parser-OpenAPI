@@ -68,18 +68,22 @@ sub _strip_dup {
   @dups;
 }
 
-# heuristic 3: find objects with set of propnames that is subset of
-#   another object's propnames
-sub _strip_subset {
+# sorted list of all propnames
+sub _get_all_propnames {
   my ($defs) = @_;
   my %allprops;
   for my $defname (keys %$defs) {
     $allprops{$_} = 1 for keys %{ $defs->{$defname}{properties} };
   }
-  my @allpropnames = sort keys %allprops;
+  [ sort keys %allprops ];
+}
+
+sub defs2mask {
+  my ($defs) = @_;
+  my $allpropnames = _get_all_propnames($defs);
   my $count = 0;
   my %prop2count;
-  for my $propname (@allpropnames) {
+  for my $propname (@$allpropnames) {
     $prop2count{$propname} = $count;
     $count++;
   }
@@ -88,11 +92,19 @@ sub _strip_subset {
     $def2mask{$defname} |= (1 << $prop2count{$_})
       for keys %{ $defs->{$defname}{properties} };
   }
+  \%def2mask;
+}
+
+# heuristic 3: find objects with set of propnames that is subset of
+#   another object's propnames
+sub _strip_subset {
+  my ($defs) = @_;
+  my $def2mask = defs2mask($defs);
   my %subsets;
   for my $defname (keys %$defs) {
-    my $thismask = $def2mask{$defname};
+    my $thismask = $def2mask->{$defname};
     for my $supersetname (grep $_ ne $defname, keys %$defs) {
-      my $supermask = $def2mask{$supersetname};
+      my $supermask = $def2mask->{$supersetname};
       next unless ($thismask & $supermask) == $thismask;
       DEBUG and _debug("mask $defname subset $supersetname");
       $subsets{$defname} = 1;
@@ -284,6 +296,37 @@ None at present.
 Standard as per L<SQL::Translator::Parser>. The input $data is a scalar
 that can be understood as a L<JSON::Validator
 specification|JSON::Validator/schema>.
+
+=head2 defs2mask
+
+Given a hashref that is a JSON pointer to an OpenAPI spec's
+C</definitions>, returns a hashref that maps each definition name to a
+bitmask. The bitmask is set from each property name in that definition,
+according to its order in the complete sorted list of all property names
+in the definitions. Not exported. E.g.
+
+  # properties:
+  my $defs = {
+    d1 => {
+      properties => {
+        p1 => 'string',
+        p2 => 'string',
+      },
+    },
+    d2 => {
+      properties => {
+        p2 => 'string',
+        p3 => 'string',
+      },
+    },
+  };
+  my $mask = SQL::Translator::Parser::OpenAPI::defs2mask($defs);
+  # all prop names, sorted: qw(p1 p2 p3)
+  # $mask:
+  {
+    d1 => (1 << 0) | (1 << 1),
+    d2 => (1 << 1) | (1 << 2),
+  }
 
 =head1 DEBUGGING
 
