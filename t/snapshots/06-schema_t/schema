@@ -4,7 +4,6 @@
 -- Table: `articles`
 --
 CREATE TABLE `articles` (
-  `author_id` integer NOT NULL,
   `body` varchar(255) NOT NULL,
   `createdAt` datetime NOT NULL,
   `description` varchar(255) NOT NULL,
@@ -14,25 +13,26 @@ CREATE TABLE `articles` (
   `slug` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `updatedAt` datetime NOT NULL,
+  `author_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
   INDEX (`author_id`),
-  CONSTRAINT `articles_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `articles_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
 ) ENGINE=InnoDB;
 
 --
 -- Table: `comments`
 --
 CREATE TABLE `comments` (
-  `author_id` integer NOT NULL,
   `body` varchar(255) NOT NULL,
   `createdAt` datetime NOT NULL,
   `id` integer NOT NULL auto_increment,
   `updatedAt` datetime NOT NULL,
+  `author_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
   INDEX (`author_id`),
-  CONSTRAINT `comments_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `comments_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
 ) ENGINE=InnoDB;
 
 --

@@ -26,10 +26,10 @@ CREATE TABLE `distributions` (
 --
 CREATE TABLE `environments` (
   `id` integer NOT NULL auto_increment,
-  `language_id` integer NOT NULL,
-  `system_id` integer NOT NULL,
   `toolchain`  NULL,
   `user_agent` varchar(255) NULL,
+  `language_id` integer NOT NULL,
+  `system_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
   INDEX (`language_id`),
   INDEX (`system_id`),
@@ -127,9 +127,9 @@ CREATE TABLE `releases` (
 CREATE TABLE `reports` (
   `comments`  NULL,
   `created` varchar(255) NULL,
+  `id` varchar(255) NOT NULL auto_increment,
   `distribution_id` integer NOT NULL,
   `environment_id` integer NOT NULL,
-  `id` varchar(255) NOT NULL auto_increment,
   `reporter_id` integer NOT NULL,
   `result_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
@@ -137,9 +137,9 @@ CREATE TABLE `reports` (
   INDEX (`environment_id`),
   INDEX (`reporter_id`),
   INDEX (`result_id`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `reports_fk` FOREIGN KEY (`distribution_id`) REFERENCES `distributions` (`id`),
   CONSTRAINT `reports_fk_1` FOREIGN KEY (`environment_id`) REFERENCES `environments` (`id`),
-  PRIMARY KEY (`id`),
   CONSTRAINT `reports_fk_2` FOREIGN KEY (`reporter_id`) REFERENCES `reporters` (`id`),
   CONSTRAINT `reports_fk_3` FOREIGN KEY (`result_id`) REFERENCES `results` (`id`)
 ) ENGINE=InnoDB comment=\'CPAN Testers report\';
@@ -150,7 +150,6 @@ CREATE TABLE `reports` (
 CREATE TABLE `report_summaries` (
   `date` varchar(255) NULL,
   `dist` varchar(255) NULL,
-  `grade_id` integer NULL,
   `guid` varchar(255) NULL,
   `id` integer NOT NULL auto_increment,
   `osname` varchar(255) NULL,
@@ -159,10 +158,11 @@ CREATE TABLE `report_summaries` (
   `platform` varchar(255) NULL,
   `reporter` varchar(255) NULL,
   `version` varchar(255) NULL,
+  `grade_id` integer NULL,
   INDEX `pk_id` (`id`),
   INDEX (`grade_id`),
-  CONSTRAINT `report_summaries_fk` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `report_summaries_fk` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`)
 ) ENGINE=InnoDB comment=\'Flattened summary data from the test report data structure\';
 
 --
@@ -182,18 +182,18 @@ CREATE TABLE `reporters` (
 CREATE TABLE `results` (
   `duration` integer NULL,
   `failures` integer NULL,
-  `grade_id` integer NOT NULL,
   `id` integer NOT NULL auto_increment,
-  `output_id` integer NOT NULL,
   `skipped` integer NULL,
   `tests` integer NULL,
   `todo`  NULL,
   `warnings` integer NULL,
+  `grade_id` integer NOT NULL,
+  `output_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
   INDEX (`grade_id`),
   INDEX (`output_id`),
-  CONSTRAINT `results_fk` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`),
   PRIMARY KEY (`id`),
+  CONSTRAINT `results_fk` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`),
   CONSTRAINT `results_fk_1` FOREIGN KEY (`output_id`) REFERENCES `test_outputs` (`id`)
 ) ENGINE=InnoDB;
 

@@ -40,14 +40,14 @@ CREATE TABLE `orders` (
 -- Table: `pets`
 --
 CREATE TABLE `pets` (
-  `category_id` integer NULL,
   `id` bigint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `status` enum(\'available\', \'pending\', \'sold\') NULL,
+  `category_id` integer NULL,
   INDEX `pk_id` (`id`),
   INDEX (`category_id`),
-  CONSTRAINT `pets_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `pets_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
 ) ENGINE=InnoDB;
 
 --

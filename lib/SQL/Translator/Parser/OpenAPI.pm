@@ -165,14 +165,11 @@ sub _make_fk {
 }
 
 sub _fk_hookup {
-  my ($table, $propname, $ref) = @_;
-  my $fk_id = $propname . '_id';
-  my $foreign_ref = _ref2def($ref);
-  DEBUG and _debug("_fk_hookup($propname)($fk_id)(ref)($foreign_ref)", $ref);
-  my $foreign_table = _def2tablename($foreign_ref);
-  DEBUG and _debug("ref($foreign_table)");
-  my $field = $table->add_field(name => $fk_id, data_type => 'int');
-  _make_fk($table, $field, $foreign_table, 'id');
+  my ($fromtable, $fromkey, $totable, $tokey, $required) = @_;
+  DEBUG and _debug("_fk_hookup($fromkey)(ref)($totable)");
+  my $field = $fromtable->add_field(name => $fromkey, data_type => 'int');
+  _make_fk($fromtable, $field, $totable, $tokey);
+  _make_not_null($fromtable, $field) if $required;
   $field;
 }
 
@@ -189,12 +186,17 @@ sub _def2table {
     $props->{id} = { type => 'integer' };
   }
   my %prop2required = map { ($_ => 1) } @{ $def->{required} || [] };
+  my (@fixups);
   for my $propname (sort keys %$props) {
     my $field;
     my $thisprop = $props->{$propname};
     DEBUG and _debug("_def2table($propname)");
     if (my $ref = $thisprop->{'$ref'}) {
-      $field = _fk_hookup($table, $propname, $ref);
+      push @fixups, {
+        to => _def2tablename(_ref2def($ref)), from => $tname,
+        tokey => 'id', fromkey => $propname . '_id',
+        required => $prop2required{$propname},
+      };
     } elsif (($thisprop->{type} // '') eq 'array') {
       # if $ref, inject FK into it pointing at us
       # if simple type, make a table with that and FK it to us
@@ -209,7 +211,7 @@ sub _def2table {
       _make_not_null($table, $field);
     }
   }
-  $table;
+  ($table, \@fixups);
 }
 
 # mutates $def
@@ -281,9 +283,16 @@ sub parse {
   DEBUG and _debug("subset ret", [ sort @subset ]);
   delete @defs{@subset};
   DEBUG and _debug("remaining", [ sort keys %defs ]);
+  my (@fixups);
   for my $name (sort keys %defs) {
-    my $table = _def2table($name, $defs{$name}, $schema);
-    DEBUG and _debug("table", $table);
+    my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema);
+    push @fixups, @$thesefixups;
+    DEBUG and _debug("table", $table, $thesefixups);
+  }
+  DEBUG and _debug("tables to do", \@fixups);
+  for my $fixup (@fixups) {
+    my $from_table = $schema->get_table($fixup->{from});
+    _fk_hookup($from_table, @{$fixup}{qw(fromkey to tokey required)});
   }
   1;
 }
