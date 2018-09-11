@@ -40,7 +40,7 @@ sub _debug {
 # heuristic 1: strip out single-item objects
 sub _strip_thin {
   my ($defs) = @_;
-  my @thin = grep { keys(%{ $defs->{$_}{properties} }) <= 1 } keys %$defs;
+  my @thin = grep { keys(%{ $defs->{$_}{properties} }) == 1 } keys %$defs;
   if (DEBUG) {
     _debug("OpenAPI($_) thin, ignoring", $defs->{$_}{properties})
       for sort @thin;
@@ -202,6 +202,38 @@ sub _def2table {
   $table;
 }
 
+# mutates $def
+sub _merge_one {
+  my ($def, $from) = @_;
+  DEBUG and _debug('OpenAPI._merge_one', $def, $from);
+  push @{ $def->{required} }, @{ $from->{required} || [] };
+  $def->{properties} = { %{$def->{properties} || {}}, %{$from->{properties}} };
+  $def->{type} = $from->{type} if $from->{type};
+}
+
+sub _merge_allOf {
+  my ($defs) = @_;
+  DEBUG and _debug('OpenAPI._merge_allOf', $defs);
+  my %newdefs;
+  for my $defname (sort keys %$defs) {
+    my $thisdef = $defs->{$defname};
+    my %new = %$thisdef;
+    if (exists $thisdef->{allOf}) {
+      my @all = @{ delete $thisdef->{allOf} };
+      for my $partial (@all) {
+        if (exists $partial->{'$ref'}) {
+          _merge_one(\%new, $defs->{ _ref2def($partial->{'$ref'}) });
+        } else {
+          _merge_one(\%new, $partial);
+        }
+      }
+    }
+    $newdefs{$defname} = \%new;
+  }
+  DEBUG and _debug('OpenAPI._merge_allOf(end)', \%newdefs);
+  \%newdefs;
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -211,6 +243,7 @@ sub parse {
   my @thin = _strip_thin(\%defs);
   DEBUG and _debug("thin ret", \@thin);
   delete @defs{@thin};
+  %defs = %{ _merge_allOf(\%defs) };
   my $def2mask = defs2mask(\%defs);
   my @dup = _strip_dup(\%defs, $def2mask);
   DEBUG and _debug("dup ret", \@dup);

@@ -12,10 +12,10 @@ CREATE TABLE `errors` (
 );
 
 --
--- Table: `new_pets`
+-- Table: `pets`
 --
-CREATE TABLE `new_pets` (
-  `id` integer NOT NULL auto_increment,
+CREATE TABLE `pets` (
+  `id` bigint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `tag` varchar(255) NULL,
   INDEX `pk_id` (`id`),

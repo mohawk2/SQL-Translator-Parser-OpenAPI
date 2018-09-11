@@ -39,40 +39,35 @@ CREATE TABLE `environments` (
 ) ENGINE=InnoDB;
 
 --
--- Table: `languages`
+-- Table: `perl 5s`
 --
-CREATE TABLE `languages` (
+CREATE TABLE `perl 5s` (
   `archname` varchar(255) NOT NULL,
   `build` varchar(255) NULL,
+  `commit_id` varchar(255) NULL,
   `id` integer NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `variables`  NULL,
   `version` varchar(255) NOT NULL,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+) comment=\'Language data for Perl 5 reports\';
 
 --
--- Table: `new_reports`
+-- Table: `perl 6s`
 --
-CREATE TABLE `new_reports` (
-  `comments`  NULL,
-  `distribution_id` integer NOT NULL,
-  `environment_id` integer NOT NULL,
+CREATE TABLE `perl 6s` (
+  `archname` varchar(255) NOT NULL,
+  `backend`  NULL,
+  `build` varchar(255) NULL,
   `id` integer NOT NULL auto_increment,
-  `reporter_id` integer NOT NULL,
-  `result_id` integer NOT NULL,
+  `implementation` varchar(255) NULL,
+  `name` varchar(255) NOT NULL,
+  `variables`  NULL,
+  `version` varchar(255) NOT NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`distribution_id`),
-  INDEX (`environment_id`),
-  INDEX (`reporter_id`),
-  INDEX (`result_id`),
-  CONSTRAINT `new_reports_fk` FOREIGN KEY (`distribution_id`) REFERENCES `distributions` (`id`),
-  CONSTRAINT `new_reports_fk_1` FOREIGN KEY (`environment_id`) REFERENCES `environments` (`id`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `new_reports_fk_2` FOREIGN KEY (`reporter_id`) REFERENCES `reporters` (`id`),
-  CONSTRAINT `new_reports_fk_3` FOREIGN KEY (`result_id`) REFERENCES `results` (`id`)
-) ENGINE=InnoDB;
+  PRIMARY KEY (`id`)
+) comment=\'Language data for Perl 6 reports\';
 
 --
 -- Table: `prerequisites`
@@ -102,6 +97,29 @@ CREATE TABLE `releases` (
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) comment=\'A summary of test reports for a single CPAN release\';
+
+--
+-- Table: `reports`
+--
+CREATE TABLE `reports` (
+  `comments`  NULL,
+  `created` varchar(255) NULL,
+  `distribution_id` integer NOT NULL,
+  `environment_id` integer NOT NULL,
+  `id` varchar(255) NOT NULL auto_increment,
+  `reporter_id` integer NOT NULL,
+  `result_id` integer NOT NULL,
+  INDEX `pk_id` (`id`),
+  INDEX (`distribution_id`),
+  INDEX (`environment_id`),
+  INDEX (`reporter_id`),
+  INDEX (`result_id`),
+  CONSTRAINT `reports_fk` FOREIGN KEY (`distribution_id`) REFERENCES `distributions` (`id`),
+  CONSTRAINT `reports_fk_1` FOREIGN KEY (`environment_id`) REFERENCES `environments` (`id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `reports_fk_2` FOREIGN KEY (`reporter_id`) REFERENCES `reporters` (`id`),
+  CONSTRAINT `reports_fk_3` FOREIGN KEY (`result_id`) REFERENCES `results` (`id`)
+) ENGINE=InnoDB comment=\'CPAN Testers report\';
 
 --
 -- Table: `report_summaries`
