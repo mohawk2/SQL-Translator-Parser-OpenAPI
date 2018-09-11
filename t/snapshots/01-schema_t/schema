@@ -101,9 +101,12 @@ CREATE TABLE `prerequisites` (
   `name` varchar(255) NOT NULL,
   `need` varchar(255) NOT NULL,
   `phase` varchar(255) NOT NULL,
+  `distribution_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
-);
+  INDEX (`distribution_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `prerequisites_fk` FOREIGN KEY (`distribution_id`) REFERENCES `distributions` (`id`)
+) ENGINE=InnoDB;
 
 --
 -- Table: `releases`

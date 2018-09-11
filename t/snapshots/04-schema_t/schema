@@ -56,9 +56,12 @@ CREATE TABLE `pets` (
 CREATE TABLE `tags` (
   `id` bigint NOT NULL auto_increment,
   `name` varchar(255) NULL,
+  `pet_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
-);
+  INDEX (`pet_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `tags_fk` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`id`)
+) ENGINE=InnoDB;
 
 --
 -- Table: `users`

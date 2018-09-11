@@ -7,7 +7,7 @@ use JSON::Validator::OpenAPI;
 our $VERSION = "0.02";
 use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
 use String::CamelCase qw(camelize decamelize wordsplit);
-use Lingua::EN::Inflect::Number qw(to_PL);
+use Lingua::EN::Inflect::Number qw(to_PL to_S);
 use SQL::Translator::Schema::Constants;
 use Math::BigInt;
 
@@ -198,8 +198,16 @@ sub _def2table {
         required => $prop2required{$propname},
       };
     } elsif (($thisprop->{type} // '') eq 'array') {
-      # if $ref, inject FK into it pointing at us
-      # if simple type, make a table with that and FK it to us
+      if (my $ref = $thisprop->{items}{'$ref'}) {
+        push @fixups, {
+          to => $tname, from => _ref2def(_def2tablename($ref)),
+          tokey => 'id', fromkey => to_S(${tname}) . "_id",
+          required => 1,
+        };
+      } else {
+        # if simple type, make a table with that and FK it to us
+      }
+      DEBUG and _debug("_def2table(array)($propname)", \@fixups);
     } else {
       my $sqltype = _prop2sqltype($thisprop);
       $field = $table->add_field(name => $propname, %$sqltype);
