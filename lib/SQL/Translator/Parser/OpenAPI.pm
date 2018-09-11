@@ -132,6 +132,7 @@ sub _make_pk {
   $field->is_auto_increment(1);
   $table->add_constraint(type => $_, fields => $field)
     for (PRIMARY_KEY);
+  my $index = $table->add_index(name => "pk_${field}", fields => [ $field ]);
   _make_not_null($table, $field);
 }
 

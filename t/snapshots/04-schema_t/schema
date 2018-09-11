@@ -8,6 +8,7 @@ CREATE TABLE `api_responses` (
   `id` integer NOT NULL auto_increment,
   `message` varchar(255) NULL,
   `type` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 
@@ -21,6 +22,7 @@ CREATE TABLE `orders` (
   `quantity` integer NULL,
   `shipDate` datetime NULL,
   `status` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 
@@ -32,6 +34,7 @@ CREATE TABLE `pets` (
   `id` bigint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `status` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   INDEX (`category_id`),
   CONSTRAINT `pets_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
   PRIMARY KEY (`id`)
@@ -49,6 +52,7 @@ CREATE TABLE `users` (
   `phone` varchar(255) NULL,
   `userStatus` integer NULL,
   `username` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 

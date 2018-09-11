@@ -6,6 +6,7 @@
 CREATE TABLE `accepted_reports` (
   `id` varchar(255) NOT NULL auto_increment,
   `status` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 
@@ -16,6 +17,7 @@ CREATE TABLE `distributions` (
   `id` integer NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `version` varchar(255) NOT NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -28,6 +30,7 @@ CREATE TABLE `environments` (
   `system_id` integer NOT NULL,
   `toolchain`  NULL,
   `user_agent` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   INDEX (`language_id`),
   INDEX (`system_id`),
   PRIMARY KEY (`id`),
@@ -45,6 +48,7 @@ CREATE TABLE `languages` (
   `name` varchar(255) NOT NULL,
   `variables`  NULL,
   `version` varchar(255) NOT NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -58,6 +62,7 @@ CREATE TABLE `new_reports` (
   `id` integer NOT NULL auto_increment,
   `reporter_id` integer NOT NULL,
   `result_id` integer NOT NULL,
+  INDEX `pk_id` (`id`),
   INDEX (`distribution_id`),
   INDEX (`environment_id`),
   INDEX (`reporter_id`),
@@ -78,6 +83,7 @@ CREATE TABLE `prerequisites` (
   `name` varchar(255) NOT NULL,
   `need` varchar(255) NOT NULL,
   `phase` varchar(255) NOT NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 
@@ -93,6 +99,7 @@ CREATE TABLE `releases` (
   `pass` integer NULL,
   `unknown` integer NULL,
   `version` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) comment=\'A summary of test reports for a single CPAN release\';
 
@@ -111,6 +118,7 @@ CREATE TABLE `report_summaries` (
   `platform` varchar(255) NULL,
   `reporter` varchar(255) NULL,
   `version` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   INDEX (`grade_id`),
   CONSTRAINT `report_summaries_fk` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`),
   PRIMARY KEY (`id`)
@@ -123,6 +131,7 @@ CREATE TABLE `reporters` (
   `email` varchar(255) NOT NULL,
   `id` integer NOT NULL auto_increment,
   `name` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -139,6 +148,7 @@ CREATE TABLE `results` (
   `tests` integer NULL,
   `todo`  NULL,
   `warnings` integer NULL,
+  INDEX `pk_id` (`id`),
   INDEX (`grade_id`),
   INDEX (`output_id`),
   CONSTRAINT `results_fk` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`),
@@ -159,6 +169,7 @@ CREATE TABLE `systems` (
   `osname` varchar(255) NOT NULL,
   `osversion` varchar(255) NULL,
   `variables`  NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -172,6 +183,7 @@ CREATE TABLE `test_outputs` (
   `install` varchar(255) NULL,
   `test` varchar(255) NULL,
   `uncategorized` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB comment=\'At least one of the properties must be set\';
 
@@ -185,6 +197,7 @@ CREATE TABLE `uploads` (
   `id` integer NOT NULL auto_increment,
   `released` datetime NULL,
   `version` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) comment=\'A release to CPAN\';
 

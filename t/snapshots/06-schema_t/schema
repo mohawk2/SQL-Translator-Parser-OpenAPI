@@ -14,6 +14,7 @@ CREATE TABLE `articles` (
   `slug` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `updatedAt` datetime NOT NULL,
+  INDEX `pk_id` (`id`),
   INDEX (`author_id`),
   CONSTRAINT `articles_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`),
   PRIMARY KEY (`id`)
@@ -28,6 +29,7 @@ CREATE TABLE `comments` (
   `createdAt` datetime NOT NULL,
   `id` integer NOT NULL auto_increment,
   `updatedAt` datetime NOT NULL,
+  INDEX `pk_id` (`id`),
   INDEX (`author_id`),
   CONSTRAINT `comments_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`),
   PRIMARY KEY (`id`)
@@ -39,6 +41,7 @@ CREATE TABLE `comments` (
 CREATE TABLE `multiple_articles_responses` (
   `articlesCount` integer NOT NULL,
   `id` integer NOT NULL auto_increment,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 
@@ -50,6 +53,7 @@ CREATE TABLE `new_users` (
   `id` integer NOT NULL auto_increment,
   `password` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 
@@ -62,6 +66,7 @@ CREATE TABLE `profiles` (
   `id` integer NOT NULL auto_increment,
   `image` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -75,6 +80,7 @@ CREATE TABLE `users` (
   `image` varchar(255) NOT NULL,
   `token` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
+  INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
 
