@@ -112,18 +112,6 @@ schema:
           options: []
           reference_fields: []
           reference_table: \'\'
-          type: UNIQUE
-        - deferrable: 1
-          expression: \'\'
-          fields:
-            - id
-          match_type: \'\'
-          name: \'\'
-          on_delete: \'\'
-          on_update: \'\'
-          options: []
-          reference_fields: []
-          reference_table: \'\'
           type: NOT NULL
         - deferrable: 1
           expression: \'\'
@@ -228,7 +216,7 @@ schema:
           is_auto_increment: 1
           is_nullable: 0
           is_primary_key: 1
-          is_unique: 1
+          is_unique: 0
           name: id
           order: 7
           size:
@@ -341,18 +329,6 @@ schema:
           options: []
           reference_fields: []
           reference_table: \'\'
-          type: UNIQUE
-        - deferrable: 1
-          expression: \'\'
-          fields:
-            - id
-          match_type: \'\'
-          name: \'\'
-          on_delete: \'\'
-          on_update: \'\'
-          options: []
-          reference_fields: []
-          reference_table: \'\'
           type: NOT NULL
         - deferrable: 1
           expression: \'\'
@@ -403,7 +379,7 @@ schema:
           is_auto_increment: 1
           is_nullable: 0
           is_primary_key: 1
-          is_unique: 1
+          is_unique: 0
           name: id
           order: 4
           size:
@@ -459,18 +435,6 @@ schema:
           options: []
           reference_fields: []
           reference_table: \'\'
-          type: UNIQUE
-        - deferrable: 1
-          expression: \'\'
-          fields:
-            - id
-          match_type: \'\'
-          name: \'\'
-          on_delete: \'\'
-          on_update: \'\'
-          options: []
-          reference_fields: []
-          reference_table: \'\'
           type: NOT NULL
       fields:
         articlesCount:
@@ -489,7 +453,7 @@ schema:
           is_auto_increment: 1
           is_nullable: 0
           is_primary_key: 1
-          is_unique: 1
+          is_unique: 0
           name: id
           order: 2
           size:
@@ -524,18 +488,6 @@ schema:
           reference_fields: []
           reference_table: \'\'
           type: PRIMARY KEY
-        - deferrable: 1
-          expression: \'\'
-          fields:
-            - id
-          match_type: \'\'
-          name: \'\'
-          on_delete: \'\'
-          on_update: \'\'
-          options: []
-          reference_fields: []
-          reference_table: \'\'
-          type: UNIQUE
         - deferrable: 1
           expression: \'\'
           fields:
@@ -589,7 +541,7 @@ schema:
           is_auto_increment: 1
           is_nullable: 0
           is_primary_key: 1
-          is_unique: 1
+          is_unique: 0
           name: id
           order: 2
           size:
@@ -667,18 +619,6 @@ schema:
           options: []
           reference_fields: []
           reference_table: \'\'
-          type: UNIQUE
-        - deferrable: 1
-          expression: \'\'
-          fields:
-            - id
-          match_type: \'\'
-          name: \'\'
-          on_delete: \'\'
-          on_update: \'\'
-          options: []
-          reference_fields: []
-          reference_table: \'\'
           type: NOT NULL
         - deferrable: 1
           expression: \'\'
@@ -731,7 +671,7 @@ schema:
           is_auto_increment: 1
           is_nullable: 0
           is_primary_key: 1
-          is_unique: 1
+          is_unique: 0
           name: id
           order: 3
           size:
@@ -809,18 +749,6 @@ schema:
           options: []
           reference_fields: []
           reference_table: \'\'
-          type: UNIQUE
-        - deferrable: 1
-          expression: \'\'
-          fields:
-            - id
-          match_type: \'\'
-          name: \'\'
-          on_delete: \'\'
-          on_update: \'\'
-          options: []
-          reference_fields: []
-          reference_table: \'\'
           type: NOT NULL
         - deferrable: 1
           expression: \'\'
@@ -885,7 +813,7 @@ schema:
           is_auto_increment: 1
           is_nullable: 0
           is_primary_key: 1
-          is_unique: 1
+          is_unique: 0
           name: id
           order: 3
           size:

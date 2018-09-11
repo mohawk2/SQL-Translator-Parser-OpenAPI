@@ -121,7 +121,7 @@ sub _make_pk {
   $field->is_primary_key(1);
   $field->is_auto_increment(1);
   $table->add_constraint(type => $_, fields => $field)
-    for (PRIMARY_KEY, UNIQUE);
+    for (PRIMARY_KEY);
   _make_not_null($table, $field);
 }
 
