@@ -19,3 +19,4 @@ t/snapshots/04-schema_t/schema
 t/snapshots/06-schema_t/schema
 xt/manifest.t
 xt/pod.t
+xt/pod-coverage.t
