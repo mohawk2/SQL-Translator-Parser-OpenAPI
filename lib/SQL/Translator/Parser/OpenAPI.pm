@@ -229,9 +229,9 @@ sub _def2table {
 
 # mutates $def
 sub _merge_one {
-  my ($def, $from) = @_;
+  my ($def, $from, $ignore_required) = @_;
   DEBUG and _debug('OpenAPI._merge_one', $def, $from);
-  push @{ $def->{required} }, @{ $from->{required} || [] };
+  push @{ $def->{required} }, @{ $from->{required} || [] } if !$ignore_required;
   $def->{properties} = { %{$def->{properties} || {}}, %{$from->{properties}} };
   $def->{type} = $from->{type} if $from->{type};
 }
@@ -239,17 +239,47 @@ sub _merge_one {
 sub _merge_allOf {
   my ($defs) = @_;
   DEBUG and _debug('OpenAPI._merge_allOf', $defs);
-  my %newdefs;
+  my %def2discrim = map {
+    ($_ => 1)
+  } grep $defs->{$_}{discriminator}, keys %$defs;
+  my %def2referrers;
   for my $defname (sort keys %$defs) {
+    my $thisdef = $defs->{$defname};
+    next if !exists $thisdef->{allOf};
+    for my $partial (@{ $thisdef->{allOf} }) {
+      next if !(my $ref = $partial->{'$ref'});
+      push @{ $def2referrers{_ref2def($ref)} }, $defname;
+    }
+  }
+  DEBUG and _debug('OpenAPI._merge_allOf(def2referrers)', \%def2referrers);
+  my %newdefs;
+  my %def2ignore;
+  for my $defname (sort grep $def2discrim{$_}, keys %def2referrers) {
+    # assimilate instead of be assimilated by
+    $def2ignore{$defname} = 1;
+    my $thisdef = $defs->{$defname};
+    my %new = %$thisdef;
+    for my $assimilee (@{ $def2referrers{$defname} }) {
+      $def2ignore{$assimilee} = 1;
+      my $assimileedef = $defs->{$assimilee};
+      my @all = @{ $assimileedef->{allOf} };
+      for my $partial (@all) {
+        next if exists $partial->{'$ref'};
+        _merge_one(\%new, $partial, 1);
+      }
+    }
+    $newdefs{$defname} = \%new;
+  }
+  for my $defname (sort grep !$def2ignore{$_}, keys %$defs) {
     my $thisdef = $defs->{$defname};
     my %new = %$thisdef;
     if (exists $thisdef->{allOf}) {
       my @all = @{ delete $thisdef->{allOf} };
       for my $partial (@all) {
         if (exists $partial->{'$ref'}) {
-          _merge_one(\%new, $defs->{ _ref2def($partial->{'$ref'}) });
+          _merge_one(\%new, $defs->{ _ref2def($partial->{'$ref'}) }, 0);
         } else {
-          _merge_one(\%new, $partial);
+          _merge_one(\%new, $partial, 0);
         }
       }
     }

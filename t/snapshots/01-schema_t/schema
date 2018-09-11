@@ -52,37 +52,9 @@ CREATE TABLE `grades` (
 --
 CREATE TABLE `languages` (
   `archname` varchar(255) NOT NULL,
-  `build` varchar(255) NULL,
-  `id` integer NOT NULL auto_increment,
-  `name` enum(\'Perl 5\', \'Perl 6\') NOT NULL,
-  `variables`  NULL,
-  `version` varchar(255) NOT NULL,
-  INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
---
--- Table: `perl 5s`
---
-CREATE TABLE `perl 5s` (
-  `archname` varchar(255) NOT NULL,
-  `build` varchar(255) NULL,
-  `commit_id` varchar(255) NULL,
-  `id` integer NOT NULL auto_increment,
-  `name` enum(\'Perl 5\', \'Perl 6\') NOT NULL,
-  `variables`  NULL,
-  `version` varchar(255) NOT NULL,
-  INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
-) comment=\'Language data for Perl 5 reports\';
-
---
--- Table: `perl 6s`
---
-CREATE TABLE `perl 6s` (
-  `archname` varchar(255) NOT NULL,
   `backend`  NULL,
   `build` varchar(255) NULL,
+  `commit_id` varchar(255) NULL,
   `id` integer NOT NULL auto_increment,
   `implementation` varchar(255) NULL,
   `name` enum(\'Perl 5\', \'Perl 6\') NOT NULL,
@@ -90,7 +62,7 @@ CREATE TABLE `perl 6s` (
   `version` varchar(255) NOT NULL,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
-) comment=\'Language data for Perl 6 reports\';
+) ENGINE=InnoDB;
 
 --
 -- Table: `prerequisites`
