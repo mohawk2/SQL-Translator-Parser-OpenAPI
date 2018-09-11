@@ -168,7 +168,7 @@ sub _fk_hookup {
   my ($table, $propname, $ref) = @_;
   my $fk_id = $propname . '_id';
   my $foreign_ref = _ref2def($ref);
-  DEBUG and _debug("_def2table($propname)($fk_id)(ref)($foreign_ref)", $ref);
+  DEBUG and _debug("_fk_hookup($propname)($fk_id)(ref)($foreign_ref)", $ref);
   my $foreign_table = _def2tablename($foreign_ref);
   DEBUG and _debug("ref($foreign_table)");
   my $field = $table->add_field(name => $fk_id, data_type => 'int');
@@ -191,14 +191,15 @@ sub _def2table {
   my %prop2required = map { ($_ => 1) } @{ $def->{required} || [] };
   for my $propname (sort keys %$props) {
     my $field;
+    my $thisprop = $props->{$propname};
     DEBUG and _debug("_def2table($propname)");
-    if (my $ref = $props->{$propname}{'$ref'}) {
+    if (my $ref = $thisprop->{'$ref'}) {
       $field = _fk_hookup($table, $propname, $ref);
-    } elsif (($props->{$propname}{type} // '') eq 'array') {
+    } elsif (($thisprop->{type} // '') eq 'array') {
       # if $ref, inject FK into it pointing at us
       # if simple type, make a table with that and FK it to us
     } else {
-      my $sqltype = _prop2sqltype($props->{$propname});
+      my $sqltype = _prop2sqltype($thisprop);
       $field = $table->add_field(name => $propname, %$sqltype);
       if ($propname eq 'id') {
         _make_pk($table, $field);
