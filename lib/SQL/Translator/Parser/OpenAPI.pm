@@ -9,6 +9,7 @@ use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
 use String::CamelCase qw(camelize decamelize wordsplit);
 use Lingua::EN::Inflect::Number qw(to_PL);
 use SQL::Translator::Schema::Constants;
+use Math::BigInt;
 
 my %TYPE2SQL = (
   integer => 'int',
@@ -89,7 +90,8 @@ sub defs2mask {
   }
   my %def2mask;
   for my $defname (keys %$defs) {
-    $def2mask{$defname} |= (1 << $prop2count{$_})
+    $def2mask{$defname} ||= Math::BigInt->new(0);
+    $def2mask{$defname} |= (Math::BigInt->new(1) << $prop2count{$_})
       for keys %{ $defs->{$defname}{properties} };
   }
   \%def2mask;

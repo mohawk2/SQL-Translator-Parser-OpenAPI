@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More 0.98;
+use Math::BigInt;
 
 use_ok 'SQL::Translator::Parser::OpenAPI', 'defs2mask';
 
@@ -27,5 +28,17 @@ my $expected = {
   d2 => (1 << 1) | (1 << 2),
 };
 is_deeply $mask, $expected, 'basic mask check';
+
+$defs = +{ map {
+  my $defcount = $_;
+  (
+    sprintf("d%02d", $defcount) => { properties => {
+      map { (sprintf("p%03d", $_ + $defcount) => 'string') } (1..3)
+    } }
+  )
+} (1..70) };
+$mask = SQL::Translator::Parser::OpenAPI::defs2mask($defs);
+is $mask->{d68} & $mask->{d70}, Math::BigInt->new(1) << 69,
+  'bigint-needing mask check';
 
 done_testing;
