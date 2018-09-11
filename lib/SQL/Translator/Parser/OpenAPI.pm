@@ -50,7 +50,7 @@ sub _strip_thin {
 
 # heuristic 2: find objects with same propnames, drop those with longer names
 sub _strip_dup {
-  my ($defs, $def2mask) = @_;
+  my ($defs, $def2mask, $reffed) = @_;
   my %sig2names;
   push @{ $sig2names{$def2mask->{$_}} }, $_ for keys %$def2mask;
   DEBUG and _debug("OpenAPI sig2names", \%sig2names);
@@ -58,7 +58,8 @@ sub _strip_dup {
   delete @sig2names{@nondups};
   my @dups;
   for my $sig (keys %sig2names) {
-    my @names = sort { length $a <=> length $b } @{ $sig2names{$sig} };
+    next if grep $reffed->{$_}, @{ $sig2names{$sig} };
+    my @names = sort { (length $a <=> length $b) } @{ $sig2names{$sig} };
     DEBUG and _debug("OpenAPI dup($sig)", \@names);
     shift @names; # keep the first i.e. shortest
     push @dups, @names;
@@ -97,9 +98,11 @@ sub defs2mask {
 # heuristic 3: find objects with set of propnames that is subset of
 #   another object's propnames
 sub _strip_subset {
-  my ($defs, $def2mask) = @_;
+  my ($defs, $def2mask, $reffed) = @_;
   my %subsets;
   for my $defname (keys %$defs) {
+    DEBUG and _debug("_strip_subset $defname maybe", $reffed);
+    next if $reffed->{$defname};
     my $thismask = $def2mask->{$defname};
     for my $supersetname (grep $_ ne $defname, keys %$defs) {
       my $supermask = $def2mask->{$supersetname};
@@ -240,6 +243,24 @@ sub _merge_allOf {
   \%newdefs;
 }
 
+sub _find_referenced {
+  my ($defs) = @_;
+  DEBUG and _debug('OpenAPI._find_referenced', $defs);
+  my %reffed;
+  for my $defname (sort keys %$defs) {
+    my $theseprops = $defs->{$defname}{properties} || {};
+    for my $propname (keys %$theseprops) {
+      if (my $ref = $theseprops->{$propname}{'$ref'}
+        || ($theseprops->{$propname}{items} && $theseprops->{$propname}{items}{'$ref'})
+      ) {
+        $reffed{ _ref2def($ref) } = 1;
+      }
+    }
+  }
+  DEBUG and _debug('OpenAPI._find_referenced(end)', \%reffed);
+  \%reffed;
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -251,11 +272,12 @@ sub parse {
   delete @defs{@thin};
   %defs = %{ _merge_allOf(\%defs) };
   my $def2mask = defs2mask(\%defs);
-  my @dup = _strip_dup(\%defs, $def2mask);
+  my $reffed = _find_referenced(\%defs);
+  my @dup = _strip_dup(\%defs, $def2mask, $reffed);
   DEBUG and _debug("dup ret", \@dup);
   delete @defs{@dup};
-  my @subset = _strip_subset(\%defs, $def2mask);
-  DEBUG and _debug("dup subset", [ sort @subset ]);
+  my @subset = _strip_subset(\%defs, $def2mask, $reffed);
+  DEBUG and _debug("subset ret", [ sort @subset ]);
   delete @defs{@subset};
   DEBUG and _debug("remaining", [ sort keys %defs ]);
   for my $name (sort keys %defs) {

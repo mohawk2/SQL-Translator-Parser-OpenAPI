@@ -13,6 +13,16 @@ CREATE TABLE `api_responses` (
 );
 
 --
+-- Table: `categories`
+--
+CREATE TABLE `categories` (
+  `id` bigint NOT NULL auto_increment,
+  `name` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+--
 -- Table: `orders`
 --
 CREATE TABLE `orders` (
@@ -39,6 +49,16 @@ CREATE TABLE `pets` (
   CONSTRAINT `pets_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
+
+--
+-- Table: `tags`
+--
+CREATE TABLE `tags` (
+  `id` bigint NOT NULL auto_increment,
+  `name` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
+  PRIMARY KEY (`id`)
+);
 
 --
 -- Table: `users`

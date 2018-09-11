@@ -39,6 +39,29 @@ CREATE TABLE `environments` (
 ) ENGINE=InnoDB;
 
 --
+-- Table: `grades`
+--
+CREATE TABLE `grades` (
+  `id` integer NOT NULL auto_increment,
+  INDEX `pk_id` (`id`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB comment=\'The report grade. Pass is passing tests. Fail is failing tests. NA is the distribution cannot be used on the system. Unknown is any other problem.\';
+
+--
+-- Table: `languages`
+--
+CREATE TABLE `languages` (
+  `archname` varchar(255) NOT NULL,
+  `build` varchar(255) NULL,
+  `id` integer NOT NULL auto_increment,
+  `name` enum(\'Perl 5\', \'Perl 6\') NOT NULL,
+  `variables`  NULL,
+  `version` varchar(255) NOT NULL,
+  INDEX `pk_id` (`id`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+--
 -- Table: `perl 5s`
 --
 CREATE TABLE `perl 5s` (
