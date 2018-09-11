@@ -165,11 +165,16 @@ sub _make_fk {
 }
 
 sub _fk_hookup {
-  my ($fromtable, $fromkey, $totable, $tokey, $required) = @_;
+  my ($schema, $fromtable, $fromkey, $totable, $tokey, $required) = @_;
   DEBUG and _debug("_fk_hookup($fromkey)(ref)($totable)");
-  my $field = $fromtable->add_field(name => $fromkey, data_type => 'int');
-  _make_fk($fromtable, $field, $totable, $tokey);
-  _make_not_null($fromtable, $field) if $required;
+  my $from_obj = $schema->get_table($fromtable);
+  my $to_obj = $schema->get_table($totable);
+  my $tokey_obj = $to_obj->get_field($tokey);
+  my $field = $from_obj->add_field(
+    name => $fromkey, data_type => $tokey_obj->data_type,
+  );
+  _make_fk($from_obj, $field, $totable, $tokey);
+  _make_not_null($from_obj, $field) if $required;
   $field;
 }
 
@@ -299,8 +304,7 @@ sub parse {
   }
   DEBUG and _debug("tables to do", \@fixups);
   for my $fixup (@fixups) {
-    my $from_table = $schema->get_table($fixup->{from});
-    _fk_hookup($from_table, @{$fixup}{qw(fromkey to tokey required)});
+    _fk_hookup($schema, @{$fixup}{qw(from fromkey to tokey required)});
   }
   1;
 }
