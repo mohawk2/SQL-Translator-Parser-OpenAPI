@@ -21,7 +21,7 @@ CREATE TABLE `orders` (
   `petId` bigint NULL,
   `quantity` integer NULL,
   `shipDate` datetime NULL,
-  `status` varchar(255) NULL,
+  `status` enum(\'placed\', \'approved\', \'delivered\') NULL,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
@@ -33,7 +33,7 @@ CREATE TABLE `pets` (
   `category_id` integer NULL,
   `id` bigint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
-  `status` varchar(255) NULL,
+  `status` enum(\'available\', \'pending\', \'sold\') NULL,
   INDEX `pk_id` (`id`),
   INDEX (`category_id`),
   CONSTRAINT `pets_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),

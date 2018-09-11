@@ -116,7 +116,13 @@ sub _prop2sqltype {
   my $format_type = $prop->{format} || $prop->{type};
   my $lookup = $TYPE2SQL{$format_type || ''};
   DEBUG and _debug("_prop2sqltype($format_type)($lookup)", $prop);
-  $lookup;
+  my %retval = (data_type => $lookup);
+  if (@{$prop->{enum} || []}) {
+    $retval{data_type} = 'enum';
+    $retval{extra} = { list => [ @{$prop->{enum}} ] };
+  }
+  DEBUG and _debug("_prop2sqltype(end)", \%retval);
+  \%retval;
 }
 
 sub _make_not_null {
@@ -190,7 +196,7 @@ sub _def2table {
       # if simple type, make a table with that and FK it to us
     } else {
       my $sqltype = _prop2sqltype($props->{$propname});
-      $field = $table->add_field(name => $propname, data_type => $sqltype);
+      $field = $table->add_field(name => $propname, %$sqltype);
       if ($propname eq 'id') {
         _make_pk($table, $field);
       }
