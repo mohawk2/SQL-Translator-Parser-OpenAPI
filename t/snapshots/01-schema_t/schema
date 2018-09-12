@@ -123,14 +123,14 @@ CREATE TABLE `prerequisites` (
 -- Table: `releases`
 --
 CREATE TABLE `releases` (
-  `author` varchar(255) NULL,
-  `dist` varchar(255) NULL,
-  `fail` integer NULL,
+  `author` varchar(255) NULL comment \'The CPAN ID of the author who released this version of this distribution\',
+  `dist` varchar(255) NULL comment \'The distribution name\',
+  `fail` integer NULL comment \'The number of test failures for this release\',
   `id` integer NOT NULL auto_increment,
-  `na` integer NULL,
-  `pass` integer NULL,
-  `unknown` integer NULL,
-  `version` varchar(255) NULL,
+  `na` integer NULL comment \'The number of NA results for this release, which means the release does not apply to the tester\'\'s machine due to OS, Perl version, or other conditions\',
+  `pass` integer NULL comment \'The number of test passes for this release\',
+  `unknown` integer NULL comment \'The number of unknown reports for this release\',
+  `version` varchar(255) NULL comment \'The distribution release version\',
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) comment=\'A summary of test reports for a single CPAN release\';
@@ -162,16 +162,16 @@ CREATE TABLE `reports` (
 -- Table: `report_summaries`
 --
 CREATE TABLE `report_summaries` (
-  `date` varchar(255) NULL,
-  `dist` varchar(255) NULL,
-  `guid` varchar(255) NULL,
+  `date` varchar(255) NULL comment \'The date/time of the report in ISO8601 format\',
+  `dist` varchar(255) NULL comment \'The name of the distribution tested\',
+  `guid` varchar(255) NULL comment \'The GUID of the full report this data came from\',
   `id` integer NOT NULL auto_increment,
-  `osname` varchar(255) NULL,
-  `osvers` varchar(255) NULL,
-  `perl` varchar(255) NULL,
-  `platform` varchar(255) NULL,
-  `reporter` varchar(255) NULL,
-  `version` varchar(255) NULL,
+  `osname` varchar(255) NULL comment \'The name of the operating system, like \'\'linux\'\', \'\'MSWin32\'\', \'\'darwin\'\'\',
+  `osvers` varchar(255) NULL comment \'The version of the operating system, like \'\'4.8.0-2-amd64\'\'\',
+  `perl` varchar(255) NULL comment \'The Perl version that ran the tests, like \'\'5.24.0\'\'\',
+  `platform` varchar(255) NULL comment \'The Perl platform that ran the tests, like \'\'x86_64-linux\'\'\',
+  `reporter` varchar(255) NULL comment \'The name/email of the reporter who submitted this report\',
+  `version` varchar(255) NULL comment \'The version of the distribution tested\',
   `grade_id` integer NULL,
   INDEX `pk_id` (`id`),
   INDEX (`grade_id`),
@@ -272,12 +272,12 @@ CREATE TABLE `test_outputs` (
 -- Table: `uploads`
 --
 CREATE TABLE `uploads` (
-  `author` varchar(255) NULL,
-  `dist` varchar(255) NULL,
-  `filename` varchar(255) NULL,
+  `author` varchar(255) NULL comment \'The CPAN ID of the author who released this version of this distribution\',
+  `dist` varchar(255) NULL comment \'The distribution name\',
+  `filename` varchar(255) NULL comment \'The filename on PAUSE, without the author directory\',
   `id` integer NOT NULL auto_increment,
-  `released` datetime NULL,
-  `version` varchar(255) NULL,
+  `released` datetime NULL comment \'The date/time the file was released to CPAN, in UTC\',
+  `version` varchar(255) NULL comment \'The distribution release version\',
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) comment=\'A release to CPAN\';

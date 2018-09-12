@@ -31,7 +31,7 @@ CREATE TABLE `orders` (
   `petId` bigint NULL,
   `quantity` integer NULL,
   `shipDate` datetime NULL,
-  `status` enum(\'placed\', \'approved\', \'delivered\') NULL,
+  `status` enum(\'placed\', \'approved\', \'delivered\') NULL comment \'Order Status\',
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
@@ -42,7 +42,7 @@ CREATE TABLE `orders` (
 CREATE TABLE `pets` (
   `id` bigint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
-  `status` enum(\'available\', \'pending\', \'sold\') NULL,
+  `status` enum(\'available\', \'pending\', \'sold\') NULL comment \'pet status in the store\',
   `category_id` bigint NULL,
   INDEX `pk_id` (`id`),
   INDEX (`category_id`),
@@ -73,7 +73,7 @@ CREATE TABLE `users` (
   `lastName` varchar(255) NULL,
   `password` varchar(255) NULL,
   `phone` varchar(255) NULL,
-  `userStatus` integer NULL,
+  `userStatus` integer NULL comment \'User Status\',
   `username` varchar(255) NULL,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)

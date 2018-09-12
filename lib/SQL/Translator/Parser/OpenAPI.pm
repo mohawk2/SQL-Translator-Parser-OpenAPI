@@ -215,7 +215,9 @@ sub _def2table {
       DEBUG and _debug("_def2table(array)($propname)", \@fixups);
     } else {
       my $sqltype = _prop2sqltype($thisprop);
-      $field = $table->add_field(name => $propname, %$sqltype);
+      $field = $table->add_field(
+        name => $propname, %$sqltype, comments => $thisprop->{description},
+      );
       if ($propname eq 'id') {
         _make_pk($table, $field);
       }
