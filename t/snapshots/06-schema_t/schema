@@ -24,6 +24,19 @@ CREATE TABLE `articles` (
 ) ENGINE=InnoDB;
 
 --
+-- Table: `article_tag_lists`
+--
+CREATE TABLE `article_tag_lists` (
+  `id` integer NOT NULL auto_increment,
+  `value` varchar(255) NOT NULL,
+  `article_id` integer NOT NULL,
+  INDEX `pk_id` (`id`),
+  INDEX (`article_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `article_tag_lists_fk` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`)
+) ENGINE=InnoDB;
+
+--
 -- Table: `comments`
 --
 CREATE TABLE `comments` (

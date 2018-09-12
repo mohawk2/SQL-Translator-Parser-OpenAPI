@@ -209,8 +209,6 @@ sub _def2table {
           tokey => 'id', fromkey => to_S(${tname}) . "_id",
           required => 1,
         };
-      } else {
-        # if simple type, make a table with that and FK it to us
       }
       DEBUG and _debug("_def2table(array)($propname)", \@fixups);
     } else {
@@ -338,6 +336,33 @@ sub _extract_objects {
   \%newdefs;
 }
 
+sub _extract_array_simple {
+  my ($defs) = @_;
+  DEBUG and _debug('OpenAPI._extract_array_simple', $defs);
+  my %newdefs = %$defs;
+  for my $defname (sort keys %$defs) {
+    my $theseprops = $defs->{$defname}{properties} || {};
+    for my $propname (keys %$theseprops) {
+      my $thisprop = $theseprops->{$propname};
+      next if $thisprop->{'$ref'};
+      next unless
+        $thisprop->{items} && ($thisprop->{items}{type} // '') ne 'object';
+      my $ref = $thisprop->{items};
+      my $newtype = join '', map camelize($_), $defname, $propname;
+      $newdefs{$newtype} = {
+        type => 'object',
+        properties => {
+          value => { %$ref }
+        },
+        required => [ 'value' ],
+      };
+      %$ref = ('$ref' => "#/definitions/$newtype");
+    }
+  }
+  DEBUG and _debug('OpenAPI._extract_array_simple(end)', \%newdefs);
+  \%newdefs;
+}
+
 sub _fixup_addProps {
   my ($defs) = @_;
   DEBUG and _debug('OpenAPI._fixup_addProps', $defs);
@@ -400,6 +425,8 @@ sub parse {
   DEBUG and _debug("remaining", [ sort keys %defs ]);
   %defs = %{ _extract_objects(\%defs) };
   DEBUG and _debug("after _extract_objects", [ sort keys %defs ]);
+  %defs = %{ _extract_array_simple(\%defs) };
+  DEBUG and _debug("after _extract_array_simple", [ sort keys %defs ]);
   my (@fixups);
   %defs = %{ _fixup_addProps(\%defs) };
   for my $name (sort keys %defs) {

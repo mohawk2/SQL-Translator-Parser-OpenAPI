@@ -51,6 +51,19 @@ CREATE TABLE `pets` (
 ) ENGINE=InnoDB;
 
 --
+-- Table: `pet_photo_urls`
+--
+CREATE TABLE `pet_photo_urls` (
+  `id` integer NOT NULL auto_increment,
+  `value` varchar(255) NOT NULL,
+  `pet_id` bigint NOT NULL,
+  INDEX `pk_id` (`id`),
+  INDEX (`pet_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `pet_photo_urls_fk` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`id`)
+) ENGINE=InnoDB;
+
+--
 -- Table: `tags`
 --
 CREATE TABLE `tags` (
