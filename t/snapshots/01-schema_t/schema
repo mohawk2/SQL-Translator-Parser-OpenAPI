@@ -44,11 +44,11 @@ CREATE TABLE `environment_toolchains` (
   `id` integer NOT NULL auto_increment,
   `key` varchar(255) NULL,
   `value` varchar(255) NULL,
-  `environment_id` integer NOT NULL,
+  `toolchain_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`environment_id`),
+  INDEX (`toolchain_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `environment_toolchains_fk` FOREIGN KEY (`environment_id`) REFERENCES `environments` (`id`)
+  CONSTRAINT `environment_toolchains_fk` FOREIGN KEY (`toolchain_id`) REFERENCES `environments` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -96,11 +96,11 @@ CREATE TABLE `language_variables` (
   `id` integer NOT NULL auto_increment,
   `key` varchar(255) NULL,
   `value` varchar(255) NULL,
-  `language_id` integer NOT NULL,
+  `variable_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`language_id`),
+  INDEX (`variable_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `language_variables_fk` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
+  CONSTRAINT `language_variables_fk` FOREIGN KEY (`variable_id`) REFERENCES `languages` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -112,11 +112,11 @@ CREATE TABLE `prerequisites` (
   `name` varchar(255) NOT NULL,
   `need` varchar(255) NOT NULL,
   `phase` varchar(255) NOT NULL,
-  `distribution_id` integer NOT NULL,
+  `prerequisite_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`distribution_id`),
+  INDEX (`prerequisite_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `prerequisites_fk` FOREIGN KEY (`distribution_id`) REFERENCES `distributions` (`id`)
+  CONSTRAINT `prerequisites_fk` FOREIGN KEY (`prerequisite_id`) REFERENCES `distributions` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -247,11 +247,11 @@ CREATE TABLE `system_variables` (
   `id` integer NOT NULL auto_increment,
   `key` varchar(255) NULL,
   `value` varchar(255) NULL,
-  `system_id` integer NOT NULL,
+  `variable_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`system_id`),
+  INDEX (`variable_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `system_variables_fk` FOREIGN KEY (`system_id`) REFERENCES `systems` (`id`)
+  CONSTRAINT `system_variables_fk` FOREIGN KEY (`variable_id`) REFERENCES `systems` (`id`)
 ) ENGINE=InnoDB;
 
 --

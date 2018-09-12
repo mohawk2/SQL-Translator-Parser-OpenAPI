@@ -14,13 +14,13 @@ CREATE TABLE `articles` (
   `title` varchar(255) NOT NULL,
   `updatedAt` datetime NOT NULL,
   `author_id` integer NOT NULL,
-  `multiple_articles_response_id` integer NOT NULL,
+  `article_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
   INDEX (`author_id`),
-  INDEX (`multiple_articles_response_id`),
+  INDEX (`article_id`),
   PRIMARY KEY (`id`),
   CONSTRAINT `articles_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`),
-  CONSTRAINT `articles_fk_1` FOREIGN KEY (`multiple_articles_response_id`) REFERENCES `multiple_articles_responses` (`id`)
+  CONSTRAINT `articles_fk_1` FOREIGN KEY (`article_id`) REFERENCES `multiple_articles_responses` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -29,11 +29,11 @@ CREATE TABLE `articles` (
 CREATE TABLE `article_tag_lists` (
   `id` integer NOT NULL auto_increment,
   `value` varchar(255) NOT NULL,
-  `article_id` integer NOT NULL,
+  `tagList_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`article_id`),
+  INDEX (`tagList_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `article_tag_lists_fk` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`)
+  CONSTRAINT `article_tag_lists_fk` FOREIGN KEY (`tagList_id`) REFERENCES `articles` (`id`)
 ) ENGINE=InnoDB;
 
 --

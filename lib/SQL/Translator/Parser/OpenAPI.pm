@@ -206,7 +206,7 @@ sub _def2table {
       if (my $ref = $thisprop->{items}{'$ref'}) {
         push @fixups, {
           to => $tname, from => _ref2def(_def2tablename($ref)),
-          tokey => 'id', fromkey => to_S(${tname}) . "_id",
+          tokey => 'id', fromkey => to_S($propname) . "_id",
           required => 1,
         };
       }
