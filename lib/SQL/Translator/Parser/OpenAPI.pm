@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use JSON::Validator::OpenAPI;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
 use String::CamelCase qw(camelize decamelize wordsplit);
 use Lingua::EN::Inflect::Number qw(to_PL to_S);
