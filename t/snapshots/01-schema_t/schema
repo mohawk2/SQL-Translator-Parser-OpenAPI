@@ -29,15 +29,12 @@ CREATE TABLE `environments` (
   `user_agent` varchar(255) NULL,
   `language_id` integer NOT NULL,
   `system_id` integer NOT NULL,
-  `toolchain_id` integer NULL,
   INDEX `pk_id` (`id`),
   INDEX (`language_id`),
   INDEX (`system_id`),
-  INDEX (`toolchain_id`),
   PRIMARY KEY (`id`),
   CONSTRAINT `environments_fk` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`),
-  CONSTRAINT `environments_fk_1` FOREIGN KEY (`system_id`) REFERENCES `systems` (`id`),
-  CONSTRAINT `environments_fk_2` FOREIGN KEY (`toolchain_id`) REFERENCES `environment_toolchains` (`id`)
+  CONSTRAINT `environments_fk_1` FOREIGN KEY (`system_id`) REFERENCES `systems` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -45,8 +42,13 @@ CREATE TABLE `environments` (
 --
 CREATE TABLE `environment_toolchains` (
   `id` integer NOT NULL auto_increment,
+  `key` varchar(255) NULL,
+  `value` varchar(255) NULL,
+  `environment_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
+  INDEX (`environment_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `environment_toolchains_fk` FOREIGN KEY (`environment_id`) REFERENCES `environments` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -70,13 +72,10 @@ CREATE TABLE `languages` (
   `name` enum(\'Perl 5\', \'Perl 6\') NOT NULL,
   `version` varchar(255) NOT NULL,
   `backend_id` integer NULL,
-  `variables_id` integer NULL,
   INDEX `pk_id` (`id`),
   INDEX (`backend_id`),
-  INDEX (`variables_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `languages_fk` FOREIGN KEY (`backend_id`) REFERENCES `language_backends` (`id`),
-  CONSTRAINT `languages_fk_1` FOREIGN KEY (`variables_id`) REFERENCES `language_variables` (`id`)
+  CONSTRAINT `languages_fk` FOREIGN KEY (`backend_id`) REFERENCES `language_backends` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -95,8 +94,13 @@ CREATE TABLE `language_backends` (
 --
 CREATE TABLE `language_variables` (
   `id` integer NOT NULL auto_increment,
+  `key` varchar(255) NULL,
+  `value` varchar(255) NULL,
+  `language_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
+  INDEX (`language_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `language_variables_fk` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -232,11 +236,8 @@ CREATE TABLE `systems` (
   `id` integer NOT NULL auto_increment,
   `osname` varchar(255) NOT NULL,
   `osversion` varchar(255) NULL,
-  `variables_id` integer NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`variables_id`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `systems_fk` FOREIGN KEY (`variables_id`) REFERENCES `system_variables` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -244,8 +245,13 @@ CREATE TABLE `systems` (
 --
 CREATE TABLE `system_variables` (
   `id` integer NOT NULL auto_increment,
+  `key` varchar(255) NULL,
+  `value` varchar(255) NULL,
+  `system_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
+  INDEX (`system_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `system_variables_fk` FOREIGN KEY (`system_id`) REFERENCES `systems` (`id`)
 ) ENGINE=InnoDB;
 
 --

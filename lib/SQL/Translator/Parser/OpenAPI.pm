@@ -336,6 +336,47 @@ sub _extract_objects {
   \%newdefs;
 }
 
+sub _fixup_addProps {
+  my ($defs) = @_;
+  DEBUG and _debug('OpenAPI._fixup_addProps', $defs);
+  my %def2aP = map {$_,1} grep $defs->{$_}{additionalProperties}, keys %$defs;
+  DEBUG and _debug("OpenAPI._fixup_addProps(d2aP)", \%def2aP);
+  for my $defname (sort keys %$defs) {
+    my $theseprops = $defs->{$defname}{properties} || {};
+    DEBUG and _debug("OpenAPI._fixup_addProps(arrayfix)($defname)", $theseprops);
+    for my $propname (keys %$theseprops) {
+      my $thisprop = $theseprops->{$propname};
+      DEBUG and _debug("OpenAPI._fixup_addProps(p)($propname)", $thisprop);
+      next unless $thisprop->{'$ref'}
+        or $thisprop->{items} && $thisprop->{items}{'$ref'};
+      DEBUG and _debug("OpenAPI._fixup_addProps(p)($propname)(y)");
+      my $ref;
+      if ($thisprop->{'$ref'}) {
+        $ref = $thisprop;
+      } elsif ($thisprop->{items} && $thisprop->{items}{'$ref'}) {
+        $ref = $thisprop->{items};
+      } else {
+        next;
+      }
+      my $refname = $ref->{'$ref'};
+      DEBUG and _debug("OpenAPI._fixup_addProps(p)($propname)(y2)($refname)", $ref);
+      next if !$def2aP{_ref2def($refname)};
+      %$ref = (type => 'array', items => { '$ref' => $refname });
+      DEBUG and _debug("OpenAPI._fixup_addProps(p)($propname)(y3)", $ref);
+    }
+  }
+  my %newdefs = %$defs;
+  for my $defname (keys %def2aP) {
+    my %kv = (type => 'object', properties => {
+      key => { type => 'string' },
+      value => { type => $defs->{$defname}{additionalProperties}{type} },
+    });
+    $newdefs{$defname} = \%kv;
+  }
+  DEBUG and _debug('OpenAPI._fixup_addProps(end)', \%newdefs);
+  \%newdefs;
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -358,6 +399,7 @@ sub parse {
   %defs = %{ _extract_objects(\%defs) };
   DEBUG and _debug("after _extract_objects", [ sort keys %defs ]);
   my (@fixups);
+  %defs = %{ _fixup_addProps(\%defs) };
   for my $name (sort keys %defs) {
     my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema);
     push @fixups, @$thesefixups;
