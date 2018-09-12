@@ -26,16 +26,27 @@ CREATE TABLE `distributions` (
 --
 CREATE TABLE `environments` (
   `id` integer NOT NULL auto_increment,
-  `toolchain`  NULL,
   `user_agent` varchar(255) NULL,
   `language_id` integer NOT NULL,
   `system_id` integer NOT NULL,
+  `toolchain_id` integer NULL,
   INDEX `pk_id` (`id`),
   INDEX (`language_id`),
   INDEX (`system_id`),
+  INDEX (`toolchain_id`),
   PRIMARY KEY (`id`),
   CONSTRAINT `environments_fk` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`),
-  CONSTRAINT `environments_fk_1` FOREIGN KEY (`system_id`) REFERENCES `systems` (`id`)
+  CONSTRAINT `environments_fk_1` FOREIGN KEY (`system_id`) REFERENCES `systems` (`id`),
+  CONSTRAINT `environments_fk_2` FOREIGN KEY (`toolchain_id`) REFERENCES `environment_toolchains` (`id`)
+) ENGINE=InnoDB;
+
+--
+-- Table: `environment_toolchains`
+--
+CREATE TABLE `environment_toolchains` (
+  `id` integer NOT NULL auto_increment,
+  INDEX `pk_id` (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -52,14 +63,38 @@ CREATE TABLE `grades` (
 --
 CREATE TABLE `languages` (
   `archname` varchar(255) NOT NULL,
-  `backend`  NULL,
   `build` varchar(255) NULL,
   `commit_id` varchar(255) NULL,
   `id` integer NOT NULL auto_increment,
   `implementation` varchar(255) NULL,
   `name` enum(\'Perl 5\', \'Perl 6\') NOT NULL,
-  `variables`  NULL,
   `version` varchar(255) NOT NULL,
+  `backend_id` integer NULL,
+  `variables_id` integer NULL,
+  INDEX `pk_id` (`id`),
+  INDEX (`backend_id`),
+  INDEX (`variables_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `languages_fk` FOREIGN KEY (`backend_id`) REFERENCES `language_backends` (`id`),
+  CONSTRAINT `languages_fk_1` FOREIGN KEY (`variables_id`) REFERENCES `language_variables` (`id`)
+) ENGINE=InnoDB;
+
+--
+-- Table: `language_backends`
+--
+CREATE TABLE `language_backends` (
+  `engine` varchar(255) NULL,
+  `id` integer NOT NULL auto_increment,
+  `version` varchar(255) NULL,
+  INDEX `pk_id` (`id`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+--
+-- Table: `language_variables`
+--
+CREATE TABLE `language_variables` (
+  `id` integer NOT NULL auto_increment,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -160,16 +195,29 @@ CREATE TABLE `results` (
   `id` integer NOT NULL auto_increment,
   `skipped` integer NULL,
   `tests` integer NULL,
-  `todo`  NULL,
   `warnings` integer NULL,
   `grade_id` integer NOT NULL,
   `output_id` integer NOT NULL,
+  `todo_id` integer NULL,
   INDEX `pk_id` (`id`),
   INDEX (`grade_id`),
   INDEX (`output_id`),
+  INDEX (`todo_id`),
   PRIMARY KEY (`id`),
   CONSTRAINT `results_fk` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`),
-  CONSTRAINT `results_fk_1` FOREIGN KEY (`output_id`) REFERENCES `test_outputs` (`id`)
+  CONSTRAINT `results_fk_1` FOREIGN KEY (`output_id`) REFERENCES `test_outputs` (`id`),
+  CONSTRAINT `results_fk_2` FOREIGN KEY (`todo_id`) REFERENCES `result_todoes` (`id`)
+) ENGINE=InnoDB;
+
+--
+-- Table: `result_todoes`
+--
+CREATE TABLE `result_todoes` (
+  `fail` integer NOT NULL,
+  `id` integer NOT NULL auto_increment,
+  `pass` integer NOT NULL,
+  INDEX `pk_id` (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -184,7 +232,18 @@ CREATE TABLE `systems` (
   `id` integer NOT NULL auto_increment,
   `osname` varchar(255) NOT NULL,
   `osversion` varchar(255) NULL,
-  `variables`  NULL,
+  `variables_id` integer NULL,
+  INDEX `pk_id` (`id`),
+  INDEX (`variables_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `systems_fk` FOREIGN KEY (`variables_id`) REFERENCES `system_variables` (`id`)
+) ENGINE=InnoDB;
+
+--
+-- Table: `system_variables`
+--
+CREATE TABLE `system_variables` (
+  `id` integer NOT NULL auto_increment,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;

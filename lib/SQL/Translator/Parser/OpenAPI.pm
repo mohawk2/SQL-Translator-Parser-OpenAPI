@@ -307,6 +307,35 @@ sub _find_referenced {
   \%reffed;
 }
 
+sub _extract_objects {
+  my ($defs) = @_;
+  DEBUG and _debug('OpenAPI._extract_objects', $defs);
+  my %newdefs = %$defs;
+  for my $defname (sort keys %$defs) {
+    my $theseprops = $defs->{$defname}{properties} || {};
+    for my $propname (keys %$theseprops) {
+      my $thisprop = $theseprops->{$propname};
+      next if $thisprop->{'$ref'}
+        or $thisprop->{items} && $thisprop->{items}{'$ref'};
+      my $ref;
+      if (($thisprop->{type} // '') eq 'object') {
+        $ref = $thisprop;
+      } elsif (
+        $thisprop->{items} && ($thisprop->{items}{type} // '') eq 'object'
+      ) {
+        $ref = $thisprop->{items};
+      } else {
+        next;
+      }
+      my $newtype = join '', map camelize($_), $defname, $propname;
+      $newdefs{$newtype} = { %$ref };
+      %$ref = ('$ref' => "#/definitions/$newtype");
+    }
+  }
+  DEBUG and _debug('OpenAPI._extract_objects(end)', \%newdefs);
+  \%newdefs;
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -326,6 +355,8 @@ sub parse {
   DEBUG and _debug("subset ret", [ sort @subset ]);
   delete @defs{@subset};
   DEBUG and _debug("remaining", [ sort keys %defs ]);
+  %defs = %{ _extract_objects(\%defs) };
+  DEBUG and _debug("after _extract_objects", [ sort keys %defs ]);
   my (@fixups);
   for my $name (sort keys %defs) {
     my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema);
