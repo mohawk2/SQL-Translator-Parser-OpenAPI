@@ -26,6 +26,7 @@ my %TYPE2SQL = (
   'date-time' => 'datetime',
   password => 'varchar',
 );
+my %SQL2TYPE = reverse %TYPE2SQL; # unreliable order but ok as still reversible
 
 # from GraphQL::Debug
 sub _debug {
@@ -166,13 +167,14 @@ sub _make_fk {
 
 sub _fk_hookup {
   my ($schema, $fromtable, $fromkey, $totable, $tokey, $required) = @_;
-  DEBUG and _debug("_fk_hookup($fromkey)(ref)($totable)");
+  DEBUG and _debug("_fk_hookup $fromtable.$fromkey $totable.$tokey $required");
   my $from_obj = $schema->get_table($fromtable);
   my $to_obj = $schema->get_table($totable);
   my $tokey_obj = $to_obj->get_field($tokey);
-  my $field = $from_obj->add_field(
+  my $field = $from_obj->get_field($fromkey) || $from_obj->add_field(
     name => $fromkey, data_type => $tokey_obj->data_type,
   );
+  die $from_obj->error if !$field;
   _make_fk($from_obj, $field, $totable, $tokey);
   _make_not_null($from_obj, $field) if $required;
   $field;
@@ -201,6 +203,7 @@ sub _def2table {
         to => _def2tablename(_ref2def($ref)), from => $tname,
         tokey => 'id', fromkey => $propname . '_id',
         required => $prop2required{$propname},
+        type => 'one',
       };
     } elsif (($thisprop->{type} // '') eq 'array') {
       if (my $ref = $thisprop->{items}{'$ref'}) {
@@ -208,6 +211,7 @@ sub _def2table {
           to => $tname, from => _ref2def(_def2tablename($ref)),
           tokey => 'id', fromkey => to_S($propname) . "_id",
           required => 1,
+          type => 'many',
         };
       }
       DEBUG and _debug("_def2table(array)($propname)", \@fixups);
@@ -404,6 +408,78 @@ sub _fixup_addProps {
   \%newdefs;
 }
 
+sub _tuple2name {
+  my ($fixup) = @_;
+  my $from = $fixup->{from};
+  my $fromkey = $fixup->{fromkey};
+  $fromkey =~ s#_id$##;
+  camelize join '_', map to_S($_), $from, $fromkey;
+}
+
+sub _make_many2many {
+  my ($fixups, $schema) = @_;
+  my @manyfixups = grep $_->{type} eq 'many', @$fixups;
+  my %from_tos;
+  push @{ $from_tos{$_->{from}}{$_->{to}} }, $_ for @manyfixups;
+  my %to_froms;
+  push @{ $to_froms{$_->{to}}{$_->{from}} }, $_ for @manyfixups;
+  my %m2m;
+  my %ref2nonm2mfixup;
+  $ref2nonm2mfixup{$_} = $_ for @$fixups;
+  for my $from (keys %from_tos) {
+    for my $to (keys %{ $from_tos{$from} }) {
+      for my $fixup (@{ $from_tos{$from}{$to} }) {
+        for my $other (@{ $to_froms{$from}{$to} }) {
+          my ($f1, $f2) = sort { $a->{from} cmp $b->{from} } $fixup, $other;
+          $m2m{_tuple2name($f1)}{_tuple2name($f2)} = [ $f1, $f2 ];
+          delete $ref2nonm2mfixup{$_} for $f1, $f2;
+        }
+      }
+    }
+  }
+  my @replacefixups;
+  for my $n1 (sort keys %m2m) {
+    for my $n2 (sort keys %{ $m2m{$n1} }) {
+      my ($f1, $f2) = @{ $m2m{$n1}{$n2} };
+      my ($t1_obj, $t2_obj) = map $schema->get_table($_->{to}), $f1, $f2;
+      my ($table) = _def2table(
+        $n1.$n2,
+        {
+          type => 'object',
+          properties => {
+            $f1->{from}.'_'.$f1->{fromkey} => {
+              type => $SQL2TYPE{$t1_obj->get_field($f1->{tokey})->data_type}
+            },
+            $f2->{from}.'_'.$f2->{fromkey} => {
+              type => $SQL2TYPE{$t2_obj->get_field($f2->{tokey})->data_type}
+            },
+          },
+        },
+        $schema,
+      );
+      push @replacefixups, {
+        to => $f1->{from},
+        tokey => 'id',
+        from => $table->name,
+        fromkey => $f1->{from}.'_'.$f1->{fromkey},
+        required => 1,
+      }, {
+        to => $f2->{from},
+        tokey => 'id',
+        from => $table->name,
+        fromkey => $f2->{from}.'_'.$f2->{fromkey},
+        required => 1,
+      };
+    }
+  }
+  [
+    (sort {
+        $a->{from} cmp $b->{from} || $a->{fromkey} cmp $b->{fromkey}
+    } values %ref2nonm2mfixup),
+    @replacefixups,
+  ];
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -435,7 +511,9 @@ sub parse {
     DEBUG and _debug("table", $table, $thesefixups);
   }
   DEBUG and _debug("tables to do", \@fixups);
-  for my $fixup (@fixups) {
+  my ($newfixups) = _make_many2many(\@fixups, $schema);
+  DEBUG and _debug("fixups still to do", $newfixups);
+  for my $fixup (@$newfixups) {
     _fk_hookup($schema, @{$fixup}{qw(from fromkey to tokey required)});
   }
   1;
