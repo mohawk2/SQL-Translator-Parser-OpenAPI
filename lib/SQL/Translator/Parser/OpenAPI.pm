@@ -412,6 +412,42 @@ sub _fixup_addProps {
   \%newdefs;
 }
 
+sub _absorb_nonobject {
+  my ($defs) = @_;
+  DEBUG and _debug('OpenAPI._absorb_nonobject', $defs);
+  my %def2nonobj = map {$_,1} grep $defs->{$_}{type} ne 'object', keys %$defs;
+  DEBUG and _debug("OpenAPI._absorb_nonobject(d2nonobj)", \%def2nonobj);
+  for my $defname (sort keys %$defs) {
+    my $theseprops = $defs->{$defname}{properties} || {};
+    DEBUG and _debug("OpenAPI._absorb_nonobject(t)($defname)", $theseprops);
+    for my $propname (keys %$theseprops) {
+      my $thisprop = $theseprops->{$propname};
+      DEBUG and _debug("OpenAPI._absorb_nonobject(p)($propname)", $thisprop);
+      next unless $thisprop->{'$ref'}
+        or $thisprop->{items} && $thisprop->{items}{'$ref'};
+      DEBUG and _debug("OpenAPI._absorb_nonobject(p)($propname)(y)");
+      my $ref;
+      if ($thisprop->{'$ref'}) {
+        $ref = $thisprop;
+      } elsif ($thisprop->{items} && $thisprop->{items}{'$ref'}) {
+        $ref = $thisprop->{items};
+      } else {
+        next;
+      }
+      my $refname = $ref->{'$ref'};
+      DEBUG and _debug("OpenAPI._absorb_nonobject(p)($propname)(y2)($refname)", $ref);
+      my $refdef = _ref2def($refname);
+      next if !$def2nonobj{$refdef};
+      %$ref = %{ $defs->{$refdef} };
+      DEBUG and _debug("OpenAPI._absorb_nonobject(p)($propname)(y3)", $ref);
+    }
+  }
+  my %newdefs = %$defs;
+  delete @newdefs{ keys %def2nonobj };
+  DEBUG and _debug('OpenAPI._absorb_nonobject(end)', \%newdefs);
+  \%newdefs;
+}
+
 sub _tuple2name {
   my ($fixup) = @_;
   my $from = $fixup->{from};
@@ -508,6 +544,7 @@ sub parse {
   %defs = %{ _extract_array_simple(\%defs) };
   my (@fixups);
   %defs = %{ _fixup_addProps(\%defs) };
+  %defs = %{ _absorb_nonobject(\%defs) };
   for my $name (sort keys %defs) {
     my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema);
     push @fixups, @$thesefixups;
