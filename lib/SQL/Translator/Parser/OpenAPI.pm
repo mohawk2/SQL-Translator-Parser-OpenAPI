@@ -65,6 +65,7 @@ sub _strip_dup {
     shift @names; # keep the first i.e. shortest
     push @dups, @names;
   }
+  DEBUG and _debug("dup ret", \@dups);
   @dups;
 }
 
@@ -112,7 +113,9 @@ sub _strip_subset {
       $subsets{$defname} = 1;
     }
   }
-  keys %subsets;
+  my @subset = keys %subsets;
+  DEBUG and _debug("subset ret", [ sort @subset ]);
+  @subset;
 }
 
 sub _prop2sqltype {
@@ -228,6 +231,7 @@ sub _def2table {
       _make_not_null($table, $field);
     }
   }
+  DEBUG and _debug("table", $table, \@fixups);
   ($table, \@fixups);
 }
 
@@ -336,7 +340,7 @@ sub _extract_objects {
       %$ref = ('$ref' => "#/definitions/$newtype");
     }
   }
-  DEBUG and _debug('OpenAPI._extract_objects(end)', \%newdefs);
+  DEBUG and _debug('OpenAPI._extract_objects(end)', [ sort keys %newdefs ], \%newdefs);
   \%newdefs;
 }
 
@@ -363,7 +367,7 @@ sub _extract_array_simple {
       %$ref = ('$ref' => "#/definitions/$newtype");
     }
   }
-  DEBUG and _debug('OpenAPI._extract_array_simple(end)', \%newdefs);
+  DEBUG and _debug('OpenAPI._extract_array_simple(end)', [ sort keys %newdefs ], \%newdefs);
   \%newdefs;
 }
 
@@ -418,6 +422,7 @@ sub _tuple2name {
 
 sub _make_many2many {
   my ($fixups, $schema) = @_;
+  DEBUG and _debug("tables to do", $fixups);
   my @manyfixups = grep $_->{type} eq 'many', @$fixups;
   my %from_tos;
   push @{ $from_tos{$_->{from}}{$_->{to}} }, $_ for @manyfixups;
@@ -472,12 +477,14 @@ sub _make_many2many {
       };
     }
   }
-  [
+  my @newfixups = (
     (sort {
         $a->{from} cmp $b->{from} || $a->{fromkey} cmp $b->{fromkey}
     } values %ref2nonm2mfixup),
     @replacefixups,
-  ];
+  );
+  DEBUG and _debug("fixups still to do", \@newfixups);
+  \@newfixups;
 }
 
 sub parse {
@@ -493,26 +500,18 @@ sub parse {
   my $def2mask = defs2mask(\%defs);
   my $reffed = _find_referenced(\%defs);
   my @dup = _strip_dup(\%defs, $def2mask, $reffed);
-  DEBUG and _debug("dup ret", \@dup);
   delete @defs{@dup};
   my @subset = _strip_subset(\%defs, $def2mask, $reffed);
-  DEBUG and _debug("subset ret", [ sort @subset ]);
   delete @defs{@subset};
-  DEBUG and _debug("remaining", [ sort keys %defs ]);
   %defs = %{ _extract_objects(\%defs) };
-  DEBUG and _debug("after _extract_objects", [ sort keys %defs ]);
   %defs = %{ _extract_array_simple(\%defs) };
-  DEBUG and _debug("after _extract_array_simple", [ sort keys %defs ]);
   my (@fixups);
   %defs = %{ _fixup_addProps(\%defs) };
   for my $name (sort keys %defs) {
     my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema);
     push @fixups, @$thesefixups;
-    DEBUG and _debug("table", $table, $thesefixups);
   }
-  DEBUG and _debug("tables to do", \@fixups);
   my ($newfixups) = _make_many2many(\@fixups, $schema);
-  DEBUG and _debug("fixups still to do", $newfixups);
   for my $fixup (@$newfixups) {
     _fk_hookup($schema, @{$fixup}{qw(from fromkey to tokey required)});
   }
