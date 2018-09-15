@@ -616,7 +616,13 @@ To try to make the data model represent the "real" data, it applies heuristics:
 
 =item *
 
-to remove object definitions that only have one property
+to remove object definitions that only have one property (which the
+author calls "thin objects")
+
+=item *
+
+for definitions that have C<allOf>, either merge them together if there
+is a C<discriminator>, or absorb properties from referred definitions
 
 =item *
 
@@ -627,6 +633,31 @@ and remove all but the shortest-named one
 
 to remove object definitions whose properties are a strict subset
 of another
+
+=item *
+
+creates object definitions for any properties that are an object
+
+=item *
+
+creates object definitions for any properties that are an array of simple
+OpenAPI types (e.g. C<string>)
+
+=item *
+
+creates object definitions for any objects that are
+C<additionalProperties> (i.e. freeform key/value pairs), that are
+key/value rows
+
+=item *
+
+absorbs any definitions that are in fact not objects, into the referring
+property
+
+=item *
+
+injects foreign-key relationships for array-of-object properties, and
+creates many-to-many tables for any two-way array relationships
 
 =back
 
