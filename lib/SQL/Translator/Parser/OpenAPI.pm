@@ -203,16 +203,20 @@ sub _def2table {
     DEBUG and _debug("_def2table($propname)");
     if (my $ref = $thisprop->{'$ref'}) {
       push @fixups, {
-        to => _def2tablename(_ref2def($ref)), from => $tname,
-        tokey => 'id', fromkey => $propname . '_id',
+        from => $tname,
+        fromkey => $propname . '_id',
+        to => _def2tablename(_ref2def($ref)),
+        tokey => 'id',
         required => $prop2required{$propname},
         type => 'one',
       };
     } elsif (($thisprop->{type} // '') eq 'array') {
       if (my $ref = $thisprop->{items}{'$ref'}) {
         push @fixups, {
-          to => $tname, from => _ref2def(_def2tablename($ref)),
-          tokey => 'id', fromkey => to_S($propname) . "_id",
+          from => _ref2def(_def2tablename($ref)),
+          fromkey => to_S($propname) . "_id",
+          to => $tname,
+          tokey => 'id',
           required => 1,
           type => 'many',
         };
