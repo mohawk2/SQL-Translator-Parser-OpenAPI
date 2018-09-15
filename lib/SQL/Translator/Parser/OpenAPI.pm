@@ -493,6 +493,7 @@ sub parse {
   my %defs = %{ $openapi_schema->get("/definitions") };
   DEBUG and _debug('OpenAPI.definitions', \%defs);
   my $schema = $tr->schema;
+  DEBUG and $schema->translator(undef); # reduce debug output
   my @thin = _strip_thin(\%defs);
   DEBUG and _debug("thin ret", \@thin);
   delete @defs{@thin};
