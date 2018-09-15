@@ -36,12 +36,9 @@ CREATE TABLE `students` (
 --
 CREATE TABLE `class_backupclass_student_participants` (
   `classes_backupclass_id` bigint NOT NULL,
-  `id` integer NOT NULL auto_increment,
   `students_participant_id` integer NOT NULL,
-  INDEX `pk_id` (`id`),
-  INDEX (`classes_backupclass_id`),
-  INDEX (`students_participant_id`),
-  PRIMARY KEY (`id`),
+  INDEX `pk_classes_backupclass_id_students_participant_id` (`classes_backupclass_id`, `students_participant_id`),
+  PRIMARY KEY (`classes_backupclass_id`, `students_participant_id`),
   CONSTRAINT `class_backupclass_student_participants_fk` FOREIGN KEY (`classes_backupclass_id`) REFERENCES `classes` (`id`),
   CONSTRAINT `class_backupclass_student_participants_fk_1` FOREIGN KEY (`students_participant_id`) REFERENCES `students` (`id`)
 ) ENGINE=InnoDB;
@@ -51,12 +48,9 @@ CREATE TABLE `class_backupclass_student_participants` (
 --
 CREATE TABLE `class_mainclass_student_participants` (
   `classes_mainclass_id` bigint NOT NULL,
-  `id` integer NOT NULL auto_increment,
   `students_participant_id` integer NOT NULL,
-  INDEX `pk_id` (`id`),
-  INDEX (`classes_mainclass_id`),
-  INDEX (`students_participant_id`),
-  PRIMARY KEY (`id`),
+  INDEX `pk_classes_mainclass_id_students_participant_id` (`classes_mainclass_id`, `students_participant_id`),
+  PRIMARY KEY (`classes_mainclass_id`, `students_participant_id`),
   CONSTRAINT `class_mainclass_student_participants_fk` FOREIGN KEY (`classes_mainclass_id`) REFERENCES `classes` (`id`),
   CONSTRAINT `class_mainclass_student_participants_fk_1` FOREIGN KEY (`students_participant_id`) REFERENCES `students` (`id`)
 ) ENGINE=InnoDB;

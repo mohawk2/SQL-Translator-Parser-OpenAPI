@@ -191,14 +191,14 @@ sub _fk_hookup {
 }
 
 sub _def2table {
-  my ($name, $def, $schema) = @_;
+  my ($name, $def, $schema, $m2m) = @_;
   my $props = $def->{properties};
   my $tname = _def2tablename($name);
-  DEBUG and _debug("_def2table($name)($tname)", $props);
+  DEBUG and _debug("_def2table($name)($tname)($m2m)", $props);
   my $table = $schema->add_table(
     name => $tname, comments => $def->{description},
   );
-  if (!$props->{id}) {
+  if (!$props->{id} and !$m2m) {
     # we need a relational id
     $props->{id} = { type => 'integer' };
   }
@@ -241,6 +241,9 @@ sub _def2table {
     if ($field and $prop2required{$propname} and $propname ne 'id') {
       _make_not_null($table, $field);
     }
+  }
+  if ($m2m) {
+    _make_pk($table, scalar $table->get_fields);
   }
   DEBUG and _debug("table", $table, \@fixups);
   ($table, \@fixups);
@@ -508,6 +511,7 @@ sub _make_many2many {
           },
         },
         $schema,
+        1,
       );
       push @replacefixups, {
         to => $f1->{from},
@@ -557,7 +561,7 @@ sub parse {
   %defs = %{ _fixup_addProps(\%defs) };
   %defs = %{ _absorb_nonobject(\%defs) };
   for my $name (sort keys %defs) {
-    my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema);
+    my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema, 0);
     push @fixups, @$thesefixups;
   }
   my ($newfixups) = _make_many2many(\@fixups, $schema);
