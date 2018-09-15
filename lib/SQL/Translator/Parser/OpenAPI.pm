@@ -502,10 +502,10 @@ sub _make_many2many {
         {
           type => 'object',
           properties => {
-            $f1->{from}.'_'.$f1->{fromkey} => {
+            $f1->{fromkey} => {
               type => $SQL2TYPE{$t1_obj->get_field($f1->{tokey})->data_type}
             },
-            $f2->{from}.'_'.$f2->{fromkey} => {
+            $f2->{fromkey} => {
               type => $SQL2TYPE{$t2_obj->get_field($f2->{tokey})->data_type}
             },
           },
@@ -517,13 +517,13 @@ sub _make_many2many {
         to => $f1->{from},
         tokey => 'id',
         from => $table->name,
-        fromkey => $f1->{from}.'_'.$f1->{fromkey},
+        fromkey => $f1->{fromkey},
         required => 1,
       }, {
         to => $f2->{from},
         tokey => 'id',
         from => $table->name,
-        fromkey => $f2->{from}.'_'.$f2->{fromkey},
+        fromkey => $f2->{fromkey},
         required => 1,
       };
     }
