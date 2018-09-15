@@ -133,20 +133,27 @@ sub _prop2sqltype {
 }
 
 sub _make_not_null {
-  my ($table, $field) = @_;
-  $field->is_nullable(0);
-  $table->add_constraint(type => $_, fields => $field)
+  my ($table, $field_in) = @_;
+  my @fields = ref($field_in) eq 'ARRAY' ? @$field_in : $field_in;
+  for my $field (@fields) {
+    $field->is_nullable(0);
+  }
+  $table->add_constraint(type => $_, fields => \@fields)
     for (NOT_NULL);
 }
 
 sub _make_pk {
-  my ($table, $field) = @_;
-  $field->is_primary_key(1);
-  $field->is_auto_increment(1);
-  $table->add_constraint(type => $_, fields => $field)
+  my ($table, $field_in) = @_;
+  my @fields = ref($field_in) eq 'ARRAY' ? @$field_in : $field_in;
+  $_->is_primary_key(1) for @fields;
+  $fields[0]->is_auto_increment(1) if @fields == 1;
+  $table->add_constraint(type => $_, fields => \@fields)
     for (PRIMARY_KEY);
-  my $index = $table->add_index(name => "pk_${field}", fields => [ $field ]);
-  _make_not_null($table, $field);
+  my $index = $table->add_index(
+    name => join('_', 'pk', map $_->name, @fields),
+    fields => \@fields,
+  );
+  _make_not_null($table, \@fields);
 }
 
 sub _def2tablename {
