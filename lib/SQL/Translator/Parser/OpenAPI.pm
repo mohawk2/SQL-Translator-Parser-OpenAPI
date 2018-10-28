@@ -41,7 +41,10 @@ sub _debug {
 # heuristic 1: strip out single-item objects
 sub _strip_thin {
   my ($defs) = @_;
-  my @thin = grep { keys(%{ $defs->{$_}{properties} }) == 1 } keys %$defs;
+  my @thin = grep {
+    my @props = keys %{ $defs->{$_}{properties} };
+    @props == 1 or (@props == 2 and grep /count/i, @props)
+  } keys %$defs;
   if (DEBUG) {
     _debug("OpenAPI($_) thin, ignoring", $defs->{$_}{properties})
       for sort @thin;
@@ -617,7 +620,8 @@ To try to make the data model represent the "real" data, it applies heuristics:
 =item *
 
 to remove object definitions that only have one property (which the
-author calls "thin objects")
+author calls "thin objects"), or that have two properties, one of whose
+names has the substring "count" (case-insensitive).
 
 =item *
 

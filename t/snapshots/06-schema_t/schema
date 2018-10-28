@@ -13,14 +13,11 @@ CREATE TABLE `articles` (
   `slug` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `updatedAt` datetime NOT NULL,
-  `article_id` integer NOT NULL,
   `author_id` integer NOT NULL,
   INDEX `pk_id` (`id`),
-  INDEX (`article_id`),
   INDEX (`author_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `articles_fk` FOREIGN KEY (`article_id`) REFERENCES `multiple_articles_responses` (`id`),
-  CONSTRAINT `articles_fk_1` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
+  CONSTRAINT `articles_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -49,16 +46,6 @@ CREATE TABLE `comments` (
   INDEX (`author_id`),
   PRIMARY KEY (`id`),
   CONSTRAINT `comments_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
-) ENGINE=InnoDB;
-
---
--- Table: `multiple_articles_responses`
---
-CREATE TABLE `multiple_articles_responses` (
-  `articlesCount` integer NOT NULL,
-  `id` integer NOT NULL auto_increment,
-  INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 --
