@@ -98,6 +98,12 @@ in the definitions. Not exported. E.g.
 
 # OPENAPI SPEC EXTENSIONS
 
+## `x-view-of`
+
+Under `/definitions/$defname`, a key of `x-view-of` will name another
+definition (NB: not a full JSON pointer). That will make `$defname`
+be a view, with the obvious columns selected from the relevant table.
+
 ## `x-artifact`
 
 Under `/definitions/$defname/properties/$propname`, a key of

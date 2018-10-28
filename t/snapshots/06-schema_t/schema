@@ -49,18 +49,6 @@ CREATE TABLE `comments` (
 ) ENGINE=InnoDB;
 
 --
--- Table: `profiles`
---
-CREATE TABLE `profiles` (
-  `bio` varchar(255) NOT NULL,
-  `id` integer NOT NULL auto_increment,
-  `image` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
---
 -- Table: `users`
 --
 CREATE TABLE `users` (
@@ -72,5 +60,13 @@ CREATE TABLE `users` (
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
 );
+
+--
+-- View: `profiles`
+--
+CREATE
+  VIEW `profiles` ( `bio`, `image`, `username` ) AS
+    select bio, image, username from users
+;
 
 SET foreign_key_checks=1;'

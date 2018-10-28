@@ -178,13 +178,32 @@ sub _make_fk {
   );
 }
 
+sub _get_entity {
+  my ($schema, $name) = @_;
+  my $entity = $schema->get_table($name);
+  return $entity if $entity;
+  $schema->get_view($name);
+}
+
+sub _get_field {
+  my ($schema, $entity, $fieldname) = @_;
+  return $entity->get_field($fieldname) if $entity->can('get_field');
+  # it's a view
+  return (
+    grep defined,
+    map $_->get_field($fieldname),
+    map $schema->get_table($_),
+      $entity->tables
+  )[0];
+}
+
 sub _fk_hookup {
   my ($schema, $fromtable, $fromkey, $totable, $tokey, $required) = @_;
   DEBUG and _debug("_fk_hookup $fromtable.$fromkey $totable.$tokey $required");
-  my $from_obj = $schema->get_table($fromtable);
-  my $to_obj = $schema->get_table($totable);
-  my $tokey_obj = $to_obj->get_field($tokey);
-  my $field = $from_obj->get_field($fromkey) || $from_obj->add_field(
+  my $from_obj = _get_entity($schema, $fromtable);
+  my $to_obj = _get_entity($schema, $totable);
+  my $tokey_obj = _get_field($schema, $to_obj, $tokey);
+  my $field = _get_field($schema, $from_obj, $fromkey) || $from_obj->add_field(
     name => $fromkey, data_type => $tokey_obj->data_type,
   );
   die $from_obj->error if !$field;
@@ -198,6 +217,17 @@ sub _def2table {
   my $props = $def->{properties};
   my $tname = _def2tablename($name);
   DEBUG and _debug("_def2table($name)($tname)($m2m)", $props);
+  if (my $view_of = $def->{'x-view-of'}) {
+    my @fields = sort keys %$props;
+    my $target_table = _def2tablename($view_of);
+    my $view = $schema->add_view(
+      name => $tname, comments => $def->{description},
+      fields => \@fields,
+      tables => [ $target_table ],
+      sql => qq{select } . join(', ', @fields) . qq{ from $target_table},
+    );
+    return ($view, []);
+  }
   my $table = $schema->add_table(
     name => $tname, comments => $def->{description},
   );
@@ -725,6 +755,12 @@ in the definitions. Not exported. E.g.
   }
 
 =head1 OPENAPI SPEC EXTENSIONS
+
+=head2 C<x-view-of>
+
+Under C</definitions/$defname>, a key of C<x-view-of> will name another
+definition (NB: not a full JSON pointer). That will make C<$defname>
+be a view, with the obvious columns selected from the relevant table.
 
 =head2 C<x-artifact>
 

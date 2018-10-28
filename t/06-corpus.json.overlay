@@ -29,6 +29,7 @@
       }
     },
     "Profile": {
+      "x-view-of": "User",
       "properties": {
         "following": {
           "x-artifact": true

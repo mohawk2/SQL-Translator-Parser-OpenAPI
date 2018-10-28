@@ -51,6 +51,7 @@ sub run_test {
   my $translator = SQL::Translator->new;
   $translator->parser("OpenAPI");
   $translator->producer("MySQL");
+  $translator->producer_args(mysql_version => 5.000002);
 
   my $got = $translator->translate(data => $openapi_schema);
   if ($got) {
