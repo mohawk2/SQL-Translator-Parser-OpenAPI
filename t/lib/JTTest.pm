@@ -36,6 +36,18 @@ sub run_test {
   require JSON::Validator::OpenAPI;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($file)->schema->data;
 
+  my $overlay = "$file.overlay";
+  if (-f $overlay) {
+    require JSON::Validator::OpenAPI;
+    # loads JSON and YAML loaders
+    my $data = do { open my $fh, $overlay or die "$overlay: $!"; local $/; <$fh> };
+    my $overlay_data = $file =~ /json$/
+      ? Mojo::JSON::decode_json($data)
+      : YAML::XS::Load($data);
+    require Hash::Merge;
+    $openapi_schema = Hash::Merge::merge($openapi_schema, $overlay_data);
+  }
+
   my $translator = SQL::Translator->new;
   $translator->parser("OpenAPI");
   $translator->producer("MySQL");
