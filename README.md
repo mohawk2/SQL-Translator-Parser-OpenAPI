@@ -96,6 +96,16 @@ in the definitions. Not exported. E.g.
       d2 => (1 << 1) | (1 << 2),
     }
 
+# OPENAPI SPEC EXTENSIONS
+
+## `x-artifact`
+
+Under `/definitions/$defname/properties/$propname`, a key of
+`x-artifact` with a true value will indicate this is not to be stored,
+and will not cause a column to be created. The value will instead be
+derived by other means. The value of this key may become the definition
+of that derivation.
+
 # DEBUGGING
 
 To debug, set environment variable `SQLTP_OPENAPI_DEBUG` to a true value.

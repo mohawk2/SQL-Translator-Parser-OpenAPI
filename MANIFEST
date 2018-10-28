@@ -13,6 +13,7 @@ t/03-schema.t
 t/04-corpus.json
 t/04-schema.t
 t/06-corpus.json
+t/06-corpus.json.overlay
 t/06-schema.t
 t/07-corpus.json
 t/07-schema.t

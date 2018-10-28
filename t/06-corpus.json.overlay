@@ -1,0 +1,25 @@
+{
+  "definitions": {
+    "User": {
+      "properties": {
+        "token": {
+          "x-artifact": true
+        }
+      }
+    },
+    "UpdateUser": {
+      "properties": {
+        "token": {
+          "x-artifact": true
+        }
+      }
+    },
+    "Profile": {
+      "properties": {
+        "following": {
+          "x-artifact": true
+        }
+      }
+    }
+  }
+}
