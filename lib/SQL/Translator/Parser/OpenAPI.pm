@@ -541,16 +541,16 @@ sub _make_many2many {
   \@newfixups;
 }
 
-sub _remove_artifact {
-  my ($defs) = @_;
-  DEBUG and _debug('OpenAPI._remove_artifact', $defs);
+sub _remove_fields {
+  my ($defs, $name) = @_;
+  DEBUG and _debug("OpenAPI._remove_fields($name)", $defs);
   for my $defname (sort keys %$defs) {
     my $theseprops = $defs->{$defname}{properties} || {};
-    DEBUG and _debug("OpenAPI._remove_artifact(t)($defname)", $theseprops);
+    DEBUG and _debug("OpenAPI._remove_fields(t)($defname)", $theseprops);
     for my $propname (keys %$theseprops) {
       my $thisprop = $theseprops->{$propname};
-      DEBUG and _debug("OpenAPI._remove_artifact(p)($propname)", $thisprop);
-      delete $theseprops->{$propname} if $thisprop->{'x-artifact'};
+      DEBUG and _debug("OpenAPI._remove_fields(p)($propname)", $thisprop);
+      delete $theseprops->{$propname} if $thisprop->{$name};
     }
   }
 }
@@ -565,7 +565,8 @@ sub parse {
   my @thin = _strip_thin(\%defs);
   DEBUG and _debug("thin ret", \@thin);
   delete @defs{@thin};
-  _remove_artifact(\%defs);
+  _remove_fields(\%defs, 'x-artifact');
+  _remove_fields(\%defs, 'x-input-only');
   %defs = %{ _merge_allOf(\%defs) };
   my $def2mask = defs2mask(\%defs);
   my $reffed = _find_referenced(\%defs);
@@ -732,6 +733,13 @@ C<x-artifact> with a true value will indicate this is not to be stored,
 and will not cause a column to be created. The value will instead be
 derived by other means. The value of this key may become the definition
 of that derivation.
+
+=head2 C<x-input-only>
+
+Under C</definitions/$defname/properties/$propname>, a key of
+C<x-input-only> with a true value will indicate this is not to be stored,
+and will not cause a column to be created. This may end up being merged
+with C<x-artifact>.
 
 =head1 DEBUGGING
 

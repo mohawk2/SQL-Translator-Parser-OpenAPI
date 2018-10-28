@@ -49,18 +49,6 @@ CREATE TABLE `comments` (
 ) ENGINE=InnoDB;
 
 --
--- Table: `new_users`
---
-CREATE TABLE `new_users` (
-  `email` varchar(255) NOT NULL,
-  `id` integer NOT NULL auto_increment,
-  `password` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  INDEX `pk_id` (`id`),
-  PRIMARY KEY (`id`)
-);
-
---
 -- Table: `profiles`
 --
 CREATE TABLE `profiles` (

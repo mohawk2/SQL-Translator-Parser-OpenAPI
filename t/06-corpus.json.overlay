@@ -1,5 +1,19 @@
 {
   "definitions": {
+    "LoginUser": {
+      "properties": {
+        "password": {
+          "x-input-only": true
+        }
+      }
+    },
+    "NewUser": {
+      "properties": {
+        "password": {
+          "x-input-only": true
+        }
+      }
+    },
     "User": {
       "properties": {
         "token": {
