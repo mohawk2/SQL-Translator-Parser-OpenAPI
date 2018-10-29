@@ -56,6 +56,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `id` integer NOT NULL auto_increment,
   `image` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)

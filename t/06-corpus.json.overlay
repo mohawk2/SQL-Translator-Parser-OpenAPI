@@ -24,8 +24,14 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        },
+        "password_hash": {
+          "type": "string"
         }
-      }
+      },
+      "required": [
+        "password_hash"
+      ]
     },
     "UpdateUser": {
       "properties": {
