@@ -1,6 +1,6 @@
 Revision history for Perl extension SQL-Translator-Parser-OpenAPI
 
-0.05	
+0.05	Mon 29 Oct 03:48:22 GMT 2018
  - thin object also if 2 properties, 1 =~ /count/i
  - add x-artifact, x-input-only, x-view-of
  - implement self-many-to-many
