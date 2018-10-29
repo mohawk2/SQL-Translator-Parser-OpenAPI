@@ -510,15 +510,21 @@ sub _make_many2many {
     for my $n2 (sort keys %{ $m2m{$n1} }) {
       my ($f1, $f2) = @{ $m2m{$n1}{$n2} };
       my ($t1_obj, $t2_obj) = map $schema->get_table($_->{to}), $f1, $f2;
+      my $f1_fromkey = $f1->{fromkey};
+      my $f2_fromkey = $f2->{fromkey};
+      if ($f1_fromkey eq $f2_fromkey and $f1->{from} eq $f2->{from}) {
+        $f1_fromkey =~ s#_id$#_to_id#;
+        $f2_fromkey =~ s#_id$#_from_id#;
+      }
       my ($table) = _def2table(
         $n1.$n2,
         {
           type => 'object',
           properties => {
-            $f1->{fromkey} => {
+            $f1_fromkey => {
               type => $SQL2TYPE{$t1_obj->get_field($f1->{tokey})->data_type}
             },
-            $f2->{fromkey} => {
+            $f2_fromkey => {
               type => $SQL2TYPE{$t2_obj->get_field($f2->{tokey})->data_type}
             },
           },
@@ -530,13 +536,13 @@ sub _make_many2many {
         to => $f1->{from},
         tokey => 'id',
         from => $table->name,
-        fromkey => $f1->{fromkey},
+        fromkey => $f1_fromkey,
         required => 1,
       }, {
         to => $f2->{from},
         tokey => 'id',
         from => $table->name,
-        fromkey => $f2->{fromkey},
+        fromkey => $f2_fromkey,
         required => 1,
       };
     }

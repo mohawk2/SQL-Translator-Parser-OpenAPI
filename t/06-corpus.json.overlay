@@ -18,6 +18,12 @@
       "properties": {
         "token": {
           "x-artifact": true
+        },
+        "follow": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
         }
       }
     },

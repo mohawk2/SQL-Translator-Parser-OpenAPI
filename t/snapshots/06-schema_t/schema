@@ -61,4 +61,16 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+--
+-- Table: `user_follow_user_follows`
+--
+CREATE TABLE `user_follow_user_follows` (
+  `follow_from_id` integer NOT NULL,
+  `follow_to_id` integer NOT NULL,
+  INDEX `pk_follow_from_id_follow_to_id` (`follow_from_id`, `follow_to_id`),
+  PRIMARY KEY (`follow_from_id`, `follow_to_id`),
+  CONSTRAINT `user_follow_user_follows_fk` FOREIGN KEY (`follow_to_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `user_follow_user_follows_fk_1` FOREIGN KEY (`follow_from_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB;
+
 SET foreign_key_checks=1;'
