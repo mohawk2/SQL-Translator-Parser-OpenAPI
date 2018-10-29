@@ -23,6 +23,12 @@ SQL::Translator::Parser::OpenAPI - convert OpenAPI schema to SQL::Translator sch
     # or...
     $ sqlt -f OpenAPI -t MySQL <my-openapi.json >my-mysqlschema.sql
 
+    # or, applying an overlay:
+    $ perl -MHash::Merge=merge -Mojo \
+      -e 'print j merge map j(f($_)->slurp), @ARGV' \
+        t/06-corpus.json t/06-corpus.json.overlay |
+      sqlt -f OpenAPI -t MySQL >my-mysqlschema.sql
+
 # DESCRIPTION
 
 This module implements a [SQL::Translator::Parser](https://metacpan.org/pod/SQL::Translator::Parser) to convert
