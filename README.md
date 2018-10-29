@@ -102,7 +102,11 @@ in the definitions. Not exported. E.g.
 
 Under `/definitions/$defname`, a key of `x-view-of` will name another
 definition (NB: not a full JSON pointer). That will make `$defname`
-be a view, with the obvious columns selected from the relevant table.
+not be created as a table. The handling of creating the "view" of the
+relevant table is left to the CRUD implementation. This gives it scope
+to use things like the current requesting user, or web parameters,
+which otherwise would require a parameterised view. These are not widely
+available.
 
 ## `x-artifact`
 

@@ -17,7 +17,7 @@ CREATE TABLE `articles` (
   INDEX `pk_id` (`id`),
   INDEX (`author_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `articles_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
+  CONSTRAINT `articles_fk` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `comments` (
   INDEX `pk_id` (`id`),
   INDEX (`author_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `comments_fk` FOREIGN KEY (`author_id`) REFERENCES `profiles` (`id`)
+  CONSTRAINT `comments_fk` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -59,14 +59,6 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
-);
-
---
--- View: `profiles`
---
-CREATE
-  VIEW `profiles` ( `bio`, `image`, `username` ) AS
-    select bio, image, username from users
-;
+) ENGINE=InnoDB;
 
 SET foreign_key_checks=1;'
