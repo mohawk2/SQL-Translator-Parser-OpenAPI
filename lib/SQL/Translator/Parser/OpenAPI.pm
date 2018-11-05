@@ -10,6 +10,7 @@ use String::CamelCase qw(camelize decamelize wordsplit);
 use Lingua::EN::Inflect::Number qw(to_PL to_S);
 use SQL::Translator::Schema::Constants;
 use Math::BigInt;
+use Hash::MoreUtils qw(slice_grep);
 
 my %TYPE2SQL = (
   integer => 'int',
@@ -264,9 +265,9 @@ sub _def2table {
 
 # mutates $def
 sub _merge_one {
-  my ($def, $from, $ignore_required) = @_;
+  my ($def, $from) = @_;
   DEBUG and _debug('OpenAPI._merge_one', $def, $from);
-  push @{ $def->{required} }, @{ $from->{required} || [] } if !$ignore_required;
+  push @{ $def->{required} }, @{ $from->{required} || [] };
   $def->{properties} = { %{$def->{properties} || {}}, %{$from->{properties}} };
   $def->{type} = $from->{type} if $from->{type};
 }
@@ -274,51 +275,40 @@ sub _merge_one {
 sub _merge_allOf {
   my ($defs) = @_;
   DEBUG and _debug('OpenAPI._merge_allOf', $defs);
-  my %def2discrim = map {
-    ($_ => 1)
-  } grep $defs->{$_}{discriminator}, keys %$defs;
+  my %r2ds = slice_grep { $_{$_}{allOf} } $defs;
+  %r2ds = map { $_ => [
+    grep $defs->{$_}{discriminator}, map _ref2def($_), grep defined, map $_->{'$ref'}, @{ $r2ds{$_}{allOf} }
+  ] } keys %r2ds;
   my %def2referrers;
-  for my $defname (sort keys %$defs) {
-    my $thisdef = $defs->{$defname};
-    next if !exists $thisdef->{allOf};
-    for my $partial (@{ $thisdef->{allOf} }) {
-      next if !(my $ref = $partial->{'$ref'});
-      push @{ $def2referrers{_ref2def($ref)} }, $defname;
-    }
+  for my $referrer (keys %r2ds) {
+    push @{ $def2referrers{$_} }, $referrer for @{ $r2ds{$referrer} };
   }
   DEBUG and _debug('OpenAPI._merge_allOf(def2referrers)', \%def2referrers);
   my %newdefs;
   my %def2ignore;
-  for my $defname (sort grep $def2discrim{$_}, keys %def2referrers) {
+  for my $defname (keys %def2referrers) {
     # assimilate instead of be assimilated by
     $def2ignore{$defname} = 1;
-    my $thisdef = $defs->{$defname};
-    my %new = %$thisdef;
+    my %new = %{ $defs->{$defname} };
+    $newdefs{$defname} = \%new;
     for my $assimilee (@{ $def2referrers{$defname} }) {
       $def2ignore{$assimilee} = 1;
-      my $assimileedef = $defs->{$assimilee};
-      my @all = @{ $assimileedef->{allOf} };
-      for my $partial (@all) {
-        next if exists $partial->{'$ref'};
-        _merge_one(\%new, $partial, 1);
-      }
+      _merge_one(\%new, $_)
+        for grep !$_->{'$ref'}, @{ $defs->{$assimilee}{allOf} };
     }
-    $newdefs{$defname} = \%new;
   }
   for my $defname (sort grep !$def2ignore{$_}, keys %$defs) {
-    my $thisdef = $defs->{$defname};
-    my %new = %$thisdef;
-    if (exists $thisdef->{allOf}) {
-      my @all = @{ delete $thisdef->{allOf} };
-      for my $partial (@all) {
-        if (exists $partial->{'$ref'}) {
-          _merge_one(\%new, $defs->{ _ref2def($partial->{'$ref'}) }, 0);
-        } else {
-          _merge_one(\%new, $partial, 0);
-        }
+    my %new = %{ $defs->{$defname} };
+    $newdefs{$defname} = \%new;
+    next if !exists $new{allOf};
+    my @all = @{ delete $new{allOf} };
+    for my $partial (@all) {
+      if (exists $partial->{'$ref'}) {
+        _merge_one(\%new, $defs->{ _ref2def($partial->{'$ref'}) });
+      } else {
+        _merge_one(\%new, $partial);
       }
     }
-    $newdefs{$defname} = \%new;
   }
   DEBUG and _debug('OpenAPI._merge_allOf(end)', \%newdefs);
   \%newdefs;
