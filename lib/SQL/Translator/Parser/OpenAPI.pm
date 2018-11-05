@@ -11,6 +11,7 @@ use Lingua::EN::Inflect::Number qw(to_PL to_S);
 use SQL::Translator::Schema::Constants;
 use Math::BigInt;
 use Hash::MoreUtils qw(slice_grep);
+use Hash::Merge qw(merge);
 
 my %TYPE2SQL = (
   integer => 'int',
@@ -263,15 +264,6 @@ sub _def2table {
   ($table, \@fixups);
 }
 
-# mutates $def
-sub _merge_one {
-  my ($def, $from) = @_;
-  DEBUG and _debug('OpenAPI._merge_one', $def, $from);
-  push @{ $def->{required} }, @{ $from->{required} || [] };
-  $def->{properties} = { %{$def->{properties} || {}}, %{$from->{properties}} };
-  $def->{type} = $from->{type} if $from->{type};
-}
-
 sub _merge_allOf {
   my ($defs) = @_;
   DEBUG and _debug('OpenAPI._merge_allOf', $defs);
@@ -279,36 +271,24 @@ sub _merge_allOf {
   %r2ds = map { $_ => [
     grep $defs->{$_}{discriminator}, map _ref2def($_), grep defined, map $_->{'$ref'}, @{ $r2ds{$_}{allOf} }
   ] } keys %r2ds;
-  my %def2referrers;
+  my @defref_pairs;
   for my $referrer (keys %r2ds) {
-    push @{ $def2referrers{$_} }, $referrer for @{ $r2ds{$referrer} };
+    push @defref_pairs, [ $_, $referrer ] for @{ $r2ds{$referrer} };
   }
-  DEBUG and _debug('OpenAPI._merge_allOf(def2referrers)', \%def2referrers);
-  my %newdefs;
+  DEBUG and _debug('OpenAPI._merge_allOf(defref_pairs)', \@defref_pairs);
+  my %newdefs = %$defs;
   my %def2ignore;
-  for my $defname (keys %def2referrers) {
-    # assimilate instead of be assimilated by
-    $def2ignore{$defname} = 1;
-    my %new = %{ $defs->{$defname} };
-    $newdefs{$defname} = \%new;
-    for my $assimilee (@{ $def2referrers{$defname} }) {
-      $def2ignore{$assimilee} = 1;
-      _merge_one(\%new, $_)
-        for grep !$_->{'$ref'}, @{ $defs->{$assimilee}{allOf} };
-    }
+  for (@defref_pairs) {
+    my ($defname, $assimilee) = @$_;
+    @def2ignore{@$_} = (1, 1);
+    $newdefs{$defname} = merge $newdefs{$defname}, $_
+      for grep !$_->{'$ref'}, @{ $defs->{$assimilee}{allOf} };
   }
-  for my $defname (sort grep !$def2ignore{$_}, keys %$defs) {
-    my %new = %{ $defs->{$defname} };
-    $newdefs{$defname} = \%new;
-    next if !exists $new{allOf};
-    my @all = @{ delete $new{allOf} };
-    for my $partial (@all) {
-      if (exists $partial->{'$ref'}) {
-        _merge_one(\%new, $defs->{ _ref2def($partial->{'$ref'}) });
-      } else {
-        _merge_one(\%new, $partial);
-      }
-    }
+  for my $defname (grep !$def2ignore{$_} && exists $newdefs{$_}{allOf}, keys %$defs) {
+    $newdefs{$defname} = merge $newdefs{$defname}, (exists $_->{'$ref'}
+      ? $defs->{ _ref2def($_->{'$ref'}) }
+      : $_) for @{ $newdefs{$defname}{allOf} };
+    delete $newdefs{$defname}{allOf}; # delete as will now be copy
   }
   DEBUG and _debug('OpenAPI._merge_allOf(end)', \%newdefs);
   \%newdefs;
