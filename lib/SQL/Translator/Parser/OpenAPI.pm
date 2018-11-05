@@ -268,13 +268,11 @@ sub _merge_allOf {
   my ($defs) = @_;
   DEBUG and _debug('OpenAPI._merge_allOf', $defs);
   my %r2ds = slice_grep { $_{$_}{allOf} } $defs;
-  %r2ds = map { $_ => [
-    grep $defs->{$_}{discriminator}, map _ref2def($_), grep defined, map $_->{'$ref'}, @{ $r2ds{$_}{allOf} }
-  ] } keys %r2ds;
-  my @defref_pairs;
-  for my $referrer (keys %r2ds) {
-    push @defref_pairs, [ $_, $referrer ] for @{ $r2ds{$referrer} };
-  }
+  my @defref_pairs = map {
+    my $referrer = $_;
+    map [ $_, $referrer ],
+      grep $defs->{$_}{discriminator}, map _ref2def($_), grep defined, map $_->{'$ref'}, @{ $r2ds{$referrer}{allOf} }
+  } keys %r2ds;
   DEBUG and _debug('OpenAPI._merge_allOf(defref_pairs)', \@defref_pairs);
   my %newdefs = %$defs;
   my %def2ignore;
