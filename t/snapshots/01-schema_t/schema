@@ -4,7 +4,7 @@
 -- Table: `accepted_reports`
 --
 CREATE TABLE `accepted_reports` (
-  `id` varchar(255) NOT NULL auto_increment,
+  `id` varchar(255) NOT NULL,
   `status` varchar(255) NULL,
   INDEX `pk_id` (`id`),
   PRIMARY KEY (`id`)
@@ -132,7 +132,7 @@ CREATE TABLE `releases` (
 CREATE TABLE `reports` (
   `comments`  NULL,
   `created` varchar(255) NULL,
-  `id` varchar(255) NOT NULL auto_increment,
+  `id` varchar(255) NOT NULL,
   `distribution_id` integer NOT NULL,
   `environment_id` integer NOT NULL,
   `reporter_id` integer NOT NULL,

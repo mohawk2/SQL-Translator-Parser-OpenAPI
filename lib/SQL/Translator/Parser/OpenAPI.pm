@@ -151,7 +151,7 @@ sub _make_pk {
   my ($table, $field_in) = @_;
   my @fields = ref($field_in) eq 'ARRAY' ? @$field_in : $field_in;
   $_->is_primary_key(1) for @fields;
-  $fields[0]->is_auto_increment(1) if @fields == 1;
+  $fields[0]->is_auto_increment(1) if @fields == 1 and $fields[0]->data_type =~ /int/;
   $table->add_constraint(type => $_, fields => \@fields)
     for (PRIMARY_KEY);
   my $index = $table->add_index(
