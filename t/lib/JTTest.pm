@@ -33,13 +33,11 @@ sub run_test {
   $file =~ s#json$#yml# if !-f $file;
   die "$file: $!" if !-f $file;
 
-  require JSON::Validator::OpenAPI;
+  require JSON::Validator::OpenAPI; # loads JSON and YAML loaders
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($file)->schema->data;
 
   my $overlay = "$file.overlay";
   if (-f $overlay) {
-    require JSON::Validator::OpenAPI;
-    # loads JSON and YAML loaders
     my $data = do { open my $fh, $overlay or die "$overlay: $!"; local $/; <$fh> };
     my $overlay_data = $file =~ /json$/
       ? Mojo::JSON::decode_json($data)
@@ -50,8 +48,7 @@ sub run_test {
 
   my $translator = SQL::Translator->new;
   $translator->parser("OpenAPI");
-  $translator->producer("MySQL");
-  $translator->producer_args(mysql_version => 5.000002);
+  $translator->producer("SQLite");
 
   my $got = $translator->translate(data => $openapi_schema);
   if ($got) {
