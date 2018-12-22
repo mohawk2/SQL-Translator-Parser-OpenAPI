@@ -5,12 +5,12 @@ BEGIN TRANSACTION;
 -- Table: accepted_reports
 --
 CREATE TABLE accepted_reports (
+  _relational_id00 INTEGER PRIMARY KEY NOT NULL,
   id varchar NOT NULL,
-  status varchar,
-  PRIMARY KEY (id)
+  status varchar
 );
 
-CREATE INDEX pk_id ON accepted_reports (id);
+CREATE INDEX pk__relational_id00 ON accepted_reports (_relational_id00);
 
 --
 -- Table: distributions
@@ -21,7 +21,7 @@ CREATE TABLE distributions (
   version varchar NOT NULL
 );
 
-CREATE INDEX pk_id02 ON distributions (id);
+CREATE INDEX pk_id ON distributions (id);
 
 --
 -- Table: environments
@@ -35,7 +35,7 @@ CREATE TABLE environments (
   FOREIGN KEY (system_id) REFERENCES systems(id)
 );
 
-CREATE INDEX pk_id03 ON environments (id);
+CREATE INDEX pk_id02 ON environments (id);
 
 --
 -- Table: environment_toolchains
@@ -48,7 +48,7 @@ CREATE TABLE environment_toolchains (
   FOREIGN KEY (toolchain_id) REFERENCES environments(id)
 );
 
-CREATE INDEX pk_id04 ON environment_toolchains (id);
+CREATE INDEX pk_id03 ON environment_toolchains (id);
 
 --
 -- Table: languages
@@ -65,7 +65,7 @@ CREATE TABLE languages (
   FOREIGN KEY (backend_id) REFERENCES language_backends(id)
 );
 
-CREATE INDEX pk_id05 ON languages (id);
+CREATE INDEX pk_id04 ON languages (id);
 
 --
 -- Table: language_backends
@@ -76,7 +76,7 @@ CREATE TABLE language_backends (
   version varchar
 );
 
-CREATE INDEX pk_id06 ON language_backends (id);
+CREATE INDEX pk_id05 ON language_backends (id);
 
 --
 -- Table: language_variables
@@ -89,7 +89,7 @@ CREATE TABLE language_variables (
   FOREIGN KEY (variable_id) REFERENCES languages(id)
 );
 
-CREATE INDEX pk_id07 ON language_variables (id);
+CREATE INDEX pk_id06 ON language_variables (id);
 
 --
 -- Table: prerequisites
@@ -104,7 +104,7 @@ CREATE TABLE prerequisites (
   FOREIGN KEY (prerequisite_id) REFERENCES distributions(id)
 );
 
-CREATE INDEX pk_id08 ON prerequisites (id);
+CREATE INDEX pk_id07 ON prerequisites (id);
 
 --
 -- Table: releases
@@ -131,7 +131,7 @@ CREATE TABLE releases (
   version varchar
 );
 
-CREATE INDEX pk_id09 ON releases (id);
+CREATE INDEX pk_id08 ON releases (id);
 
 --
 -- Table: reports
@@ -141,6 +141,7 @@ CREATE TABLE reports (
 -- CPAN Testers report
 --
 
+  _relational_id00 INTEGER PRIMARY KEY NOT NULL,
   comments ,
   created varchar,
   id varchar NOT NULL,
@@ -148,14 +149,13 @@ CREATE TABLE reports (
   environment_id int NOT NULL,
   reporter_id int NOT NULL,
   result_id int NOT NULL,
-  PRIMARY KEY (id),
   FOREIGN KEY (distribution_id) REFERENCES distributions(id),
   FOREIGN KEY (environment_id) REFERENCES environments(id),
   FOREIGN KEY (reporter_id) REFERENCES reporters(id),
   FOREIGN KEY (result_id) REFERENCES results(id)
 );
 
-CREATE INDEX pk_id10 ON reports (id);
+CREATE INDEX pk__relational_id0002 ON reports (_relational_id00);
 
 --
 -- Table: report_summaries
@@ -188,7 +188,7 @@ CREATE TABLE report_summaries (
   version varchar
 );
 
-CREATE INDEX pk_id11 ON report_summaries (id);
+CREATE INDEX pk_id09 ON report_summaries (id);
 
 --
 -- Table: reporters
@@ -199,7 +199,7 @@ CREATE TABLE reporters (
   name varchar
 );
 
-CREATE INDEX pk_id12 ON reporters (id);
+CREATE INDEX pk_id10 ON reporters (id);
 
 --
 -- Table: results
@@ -219,7 +219,7 @@ CREATE TABLE results (
   FOREIGN KEY (todo_id) REFERENCES result_todoes(id)
 );
 
-CREATE INDEX pk_id13 ON results (id);
+CREATE INDEX pk_id11 ON results (id);
 
 --
 -- Table: result_todoes
@@ -230,7 +230,7 @@ CREATE TABLE result_todoes (
   pass int NOT NULL
 );
 
-CREATE INDEX pk_id14 ON result_todoes (id);
+CREATE INDEX pk_id12 ON result_todoes (id);
 
 --
 -- Table: systems
@@ -246,7 +246,7 @@ CREATE TABLE systems (
   osversion varchar
 );
 
-CREATE INDEX pk_id15 ON systems (id);
+CREATE INDEX pk_id13 ON systems (id);
 
 --
 -- Table: system_variables
@@ -259,7 +259,7 @@ CREATE TABLE system_variables (
   FOREIGN KEY (variable_id) REFERENCES systems(id)
 );
 
-CREATE INDEX pk_id16 ON system_variables (id);
+CREATE INDEX pk_id14 ON system_variables (id);
 
 --
 -- Table: test_outputs
@@ -277,7 +277,7 @@ CREATE TABLE test_outputs (
   uncategorized varchar
 );
 
-CREATE INDEX pk_id17 ON test_outputs (id);
+CREATE INDEX pk_id15 ON test_outputs (id);
 
 --
 -- Table: uploads
@@ -300,6 +300,6 @@ CREATE TABLE uploads (
   version varchar
 );
 
-CREATE INDEX pk_id18 ON uploads (id);
+CREATE INDEX pk_id16 ON uploads (id);
 
 COMMIT;'

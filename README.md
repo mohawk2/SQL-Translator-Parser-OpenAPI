@@ -104,6 +104,22 @@ in the definitions. Not exported. E.g.
 
 # OPENAPI SPEC EXTENSIONS
 
+## `x-id-field`
+
+Under `/definitions/$defname`, a key of `x-id-field` will name a
+field within the `properties` to be the unique ID for that entity.
+If it is not given, the `id` field will be used if in the spec, or
+created if not.
+
+This will form the ostensible "key" for the generated table. If the
+key used here is an integer type, it will also be the primary key,
+being a suitable "natural" key. If not, then a "surrogate" key (with a
+generated name starting with `_relational_id`) will be added as the primary
+key. If a surrogate key is made, the natural key will be given a unique
+constraint and index, making it still suitable for lookups. Foreign key
+relations will however be constructed using the relational primary key,
+be that surrogate if created, or natural.
+
 ## `x-view-of`
 
 Under `/definitions/$defname`, a key of `x-view-of` will name another

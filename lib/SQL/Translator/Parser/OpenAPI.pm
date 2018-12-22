@@ -201,7 +201,7 @@ sub _fk_hookup {
 }
 
 sub _def2table {
-  my ($name, $def, $schema, $m2m, $view2real) = @_;
+  my ($name, $def, $schema, $m2m, $view2real, $def2relationalid) = @_;
   my $props = $def->{properties};
   my $tname = _def2tablename($name);
   DEBUG and _debug("_def2table($name)($tname)($m2m)", $props);
@@ -213,9 +213,10 @@ sub _def2table {
   my $table = $schema->add_table(
     name => $tname, comments => $def->{description},
   );
-  if (!$props->{id} and !$m2m) {
+  my $relational_id_field = $def2relationalid->{$name};
+  if (!$m2m and !$props->{$relational_id_field}) {
     # we need a relational id
-    $props->{id} = { type => 'integer' };
+    $props->{$relational_id_field} = { type => 'integer' };
   }
   my %prop2required = map { ($_ => 1) } @{ $def->{required} || [] };
   my (@fixups);
@@ -224,21 +225,23 @@ sub _def2table {
     my $thisprop = $props->{$propname};
     DEBUG and _debug("_def2table($propname)");
     if (my $ref = $thisprop->{'$ref'}) {
+      my $refname = _ref2def($ref);
       push @fixups, {
         from => $tname,
         fromkey => $propname . '_id',
-        to => _def2tablename(_ref2def($ref)),
-        tokey => 'id',
+        to => _def2tablename($refname),
+        tokey => $def2relationalid->{$refname},
         required => $prop2required{$propname},
         type => 'one',
       };
     } elsif (($thisprop->{type} // '') eq 'array') {
       if (my $ref = $thisprop->{items}{'$ref'}) {
+        my $refname = _ref2def($ref);
         push @fixups, {
-          from => _ref2def(_def2tablename($ref)),
+          from => _def2tablename($refname),
           fromkey => to_S($propname) . "_id",
           to => $tname,
-          tokey => 'id',
+          tokey => $relational_id_field,
           required => 1,
           type => 'many',
         };
@@ -249,11 +252,18 @@ sub _def2table {
       $field = $table->add_field(
         name => $propname, %$sqltype, comments => $thisprop->{description},
       );
-      if ($propname eq 'id') {
+      if ($propname eq ($relational_id_field // '')) {
         _make_pk($table, $field);
+      } elsif ($propname eq ($def->{'x-id-field'} // '')) {
+        $table->add_constraint(type => $_, fields => [ $field ])
+          for (UNIQUE);
+        my $index = $table->add_index(
+          name => join('_', 'unique', map $_->name, $field),
+          fields => [ $field ],
+        );
       }
     }
-    if ($field and $prop2required{$propname} and $propname ne 'id') {
+    if ($field and $prop2required{$propname} and $propname ne $relational_id_field) {
       _make_not_null($table, $field);
     }
   }
@@ -452,8 +462,8 @@ sub _tuple2name {
 }
 
 sub _make_many2many {
-  my ($fixups, $schema) = @_;
-  DEBUG and _debug("tables to do", $fixups);
+  my ($fixups, $schema, $def2relationalid) = @_;
+  DEBUG and _debug("_make_many2many", $fixups);
   my @manyfixups = grep $_->{type} eq 'many', @$fixups;
   my %from_tos;
   push @{ $from_tos{$_->{from}}{$_->{to}} }, $_ for @manyfixups;
@@ -499,6 +509,8 @@ sub _make_many2many {
         },
         $schema,
         1,
+        undef,
+        $def2relationalid,
       );
       push @replacefixups, {
         to => $f1->{from},
@@ -539,6 +551,40 @@ sub _remove_fields {
   }
 }
 
+sub _decide_id_fields {
+  my ($defs) = @_;
+  DEBUG and _debug('OpenAPI._decide_id_fields', $defs);
+  my %def2relationalid;
+  for my $defname (sort keys %$defs) {
+    my $thisdef = $defs->{$defname} || {};
+    my $theseprops = $thisdef->{properties} || {};
+    DEBUG and _debug("OpenAPI._decide_id_fields($defname)", $thisdef);
+    if (
+      ($theseprops->{id} and $theseprops->{id}{type} =~ /int/) or
+      !$theseprops->{id}
+    ) {
+      $def2relationalid{$defname} = 'id';
+    } elsif (
+      ($thisdef->{'x-id-field'} and $theseprops->{$thisdef->{'x-id-field'}}{type} =~ /int/)
+    ) {
+      $def2relationalid{$defname} = $thisdef->{'x-id-field'};
+    } else {
+      $def2relationalid{$defname} = _find_unique_name($theseprops);
+    }
+  }
+  DEBUG and _debug('OpenAPI._decide_id_fields(end)', \%def2relationalid);
+  \%def2relationalid;
+}
+
+sub _find_unique_name {
+  my ($props) = @_;
+  DEBUG and _debug('OpenAPI._find_unique_name', $props);
+  my $id_field = '_relational_id00';
+  $id_field++ while $props->{$id_field};
+  DEBUG and _debug('OpenAPI._find_unique_name(end)', $id_field);
+  $id_field;
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -563,11 +609,12 @@ sub parse {
   my (@fixups, %view2real);
   %defs = %{ _fixup_addProps(\%defs) };
   %defs = %{ _absorb_nonobject(\%defs) };
+  my $def2relationalid = _decide_id_fields(\%defs);
   for my $name (sort keys %defs) {
-    my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema, 0, \%view2real);
+    my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema, 0, \%view2real, $def2relationalid);
     push @fixups, @$thesefixups;
   }
-  my ($newfixups) = _make_many2many(\@fixups, $schema);
+  my ($newfixups) = _make_many2many(\@fixups, $schema, $def2relationalid);
   for my $fixup (@$newfixups) {
     _fk_hookup($schema, @{$fixup}{qw(from fromkey to tokey required)}, \%view2real);
   }
@@ -715,6 +762,22 @@ in the definitions. Not exported. E.g.
   }
 
 =head1 OPENAPI SPEC EXTENSIONS
+
+=head2 C<x-id-field>
+
+Under C</definitions/$defname>, a key of C<x-id-field> will name a
+field within the C<properties> to be the unique ID for that entity.
+If it is not given, the C<id> field will be used if in the spec, or
+created if not.
+
+This will form the ostensible "key" for the generated table. If the
+key used here is an integer type, it will also be the primary key,
+being a suitable "natural" key. If not, then a "surrogate" key (with a
+generated name starting with C<_relational_id>) will be added as the primary
+key. If a surrogate key is made, the natural key will be given a unique
+constraint and index, making it still suitable for lookups. Foreign key
+relations will however be constructed using the relational primary key,
+be that surrogate if created, or natural.
 
 =head2 C<x-view-of>
 
