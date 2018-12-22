@@ -8,8 +8,6 @@ CREATE TABLE articles (
   body varchar NOT NULL,
   createdAt datetime NOT NULL,
   description varchar NOT NULL,
-  favorited bit NOT NULL,
-  favoritesCount int NOT NULL,
   id INTEGER PRIMARY KEY NOT NULL,
   slug varchar NOT NULL,
   title varchar NOT NULL,

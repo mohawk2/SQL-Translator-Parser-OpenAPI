@@ -14,6 +14,16 @@
         }
       }
     },
+    "Article": {
+      "properties": {
+        "favorited": {
+          "x-artifact": true
+        },
+        "favoritesCount": {
+          "x-artifact": true
+        }
+      }
+    },
     "User": {
       "properties": {
         "token": {
