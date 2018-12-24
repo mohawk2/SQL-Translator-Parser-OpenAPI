@@ -40,18 +40,20 @@ sub _debug {
   Test::More::diag("$func: ", Data::Dumper::Dumper([ @_ ]));
 }
 
-# heuristic 1: strip out single-item objects
+# heuristic 1: strip out single-item objects - RHS = ref if array
 sub _strip_thin {
   my ($defs) = @_;
-  my @thin = grep {
-    my @props = keys %{ $defs->{$_}{properties} };
-    @props == 1 or (@props == 2 and grep /count/i, @props)
+  my %thin2real = map {
+    my $theseprops = $defs->{$_}{properties};
+    my @props = grep !/count/i, keys %$theseprops;
+    my $real = @props == 1 ? $theseprops->{$props[0]} : undef;
+    my $is_array = $real = $real->{items} if $real and $real->{type} eq 'array';
+    $real = $real->{'$ref'} if $real;
+    $real = _ref2def($real) if $real;
+    @props == 1 ? ($_ => $is_array ? \$real : $real) : ()
   } keys %$defs;
-  if (DEBUG) {
-    _debug("OpenAPI($_) thin, ignoring", $defs->{$_}{properties})
-      for sort @thin;
-  }
-  @thin;
+  DEBUG and _debug("OpenAPI._strip_thin", \%thin2real);
+  \%thin2real;
 }
 
 # heuristic 2: find objects with same propnames, drop those with longer names
@@ -592,9 +594,9 @@ sub parse {
   DEBUG and _debug('OpenAPI.definitions', \%defs);
   my $schema = $tr->schema;
   DEBUG and $schema->translator(undef); # reduce debug output
-  my @thin = _strip_thin(\%defs);
-  DEBUG and _debug("thin ret", \@thin);
-  delete @defs{@thin};
+  my $thin2real = _strip_thin(\%defs);
+  DEBUG and _debug("thin ret", $thin2real);
+  delete @defs{keys %$thin2real};
   _remove_fields(\%defs, 'x-artifact');
   _remove_fields(\%defs, 'x-input-only');
   %defs = %{ _merge_allOf(\%defs) };
