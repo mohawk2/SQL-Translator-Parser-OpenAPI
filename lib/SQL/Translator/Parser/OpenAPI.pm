@@ -108,7 +108,7 @@ sub defs2mask {
 #   another object's propnames
 sub _strip_subset {
   my ($defs, $def2mask, $reffed) = @_;
-  my %subsets;
+  my %subset2real;
   for my $defname (keys %$defs) {
     DEBUG and _debug("_strip_subset $defname maybe", $reffed);
     next if $reffed->{$defname};
@@ -117,12 +117,11 @@ sub _strip_subset {
       my $supermask = $def2mask->{$supersetname};
       next unless ($thismask & $supermask) == $thismask;
       DEBUG and _debug("mask $defname subset $supersetname");
-      $subsets{$defname} = 1;
+      $subset2real{$defname} = $supersetname;
     }
   }
-  my @subset = keys %subsets;
-  DEBUG and _debug("subset ret", [ sort @subset ]);
-  @subset;
+  DEBUG and _debug("subset ret", \%subset2real);
+  \%subset2real;
 }
 
 sub _prop2sqltype {
@@ -604,8 +603,8 @@ sub parse {
   my $reffed = _find_referenced(\%defs);
   my $dup2real = _strip_dup(\%defs, $def2mask, $reffed);
   delete @defs{keys %$dup2real};
-  my @subset = _strip_subset(\%defs, $def2mask, $reffed);
-  delete @defs{@subset};
+  my $subset2real = _strip_subset(\%defs, $def2mask, $reffed);
+  delete @defs{keys %$subset2real};
   %defs = %{ _extract_objects(\%defs) };
   %defs = %{ _extract_array_simple(\%defs) };
   my (@fixups, %view2real);
