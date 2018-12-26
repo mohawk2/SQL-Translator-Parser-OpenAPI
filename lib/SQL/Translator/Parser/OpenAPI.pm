@@ -304,10 +304,10 @@ sub _merge_allOf {
 }
 
 sub _find_referenced {
-  my ($defs) = @_;
+  my ($defs, $thin2real) = @_;
   DEBUG and _debug('OpenAPI._find_referenced', $defs);
   my %reffed;
-  for my $defname (sort keys %$defs) {
+  for my $defname (grep !$thin2real->{$_}, keys %$defs) {
     my $theseprops = $defs->{$defname}{properties} || {};
     for my $propname (keys %$theseprops) {
       if (my $ref = $theseprops->{$propname}{'$ref'}
@@ -611,19 +611,16 @@ sub parse {
   DEBUG and _debug('OpenAPI.definitions', \%defs);
   my $schema = $tr->schema;
   DEBUG and $schema->translator(undef); # reduce debug output
-  my $thin2real = _strip_thin(\%defs);
-  DEBUG and _debug("thin ret", $thin2real);
-  delete @defs{keys %$thin2real};
   _remove_fields(\%defs, 'x-artifact');
   _remove_fields(\%defs, 'x-input-only');
   %defs = %{ _merge_allOf(\%defs) };
+  my $thin2real = _strip_thin(\%defs);
   my $def2mask = defs2mask(\%defs);
-  my $reffed = _find_referenced(\%defs);
+  my $reffed = _find_referenced(\%defs, $thin2real);
   my $dup2real = _strip_dup(\%defs, $def2mask, $reffed);
-  delete @defs{keys %$dup2real};
   my $subset2real = _strip_subset(\%defs, $def2mask, $reffed);
-  delete @defs{keys %$subset2real};
   my $bestmap = _map_thru({ %$thin2real, %$dup2real, %$subset2real });
+  delete @defs{keys %$bestmap};
   %defs = %{ _extract_objects(\%defs) };
   %defs = %{ _extract_array_simple(\%defs) };
   my (@fixups, %view2real);
