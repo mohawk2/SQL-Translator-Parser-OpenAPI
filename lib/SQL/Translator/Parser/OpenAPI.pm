@@ -64,16 +64,16 @@ sub _strip_dup {
   DEBUG and _debug("OpenAPI sig2names", \%sig2names);
   my @nondups = grep @{ $sig2names{$_} } == 1, keys %sig2names;
   delete @sig2names{@nondups};
-  my @dups;
+  my %dup2real;
   for my $sig (keys %sig2names) {
     next if grep $reffed->{$_}, @{ $sig2names{$sig} };
     my @names = sort { (length $a <=> length $b) } @{ $sig2names{$sig} };
     DEBUG and _debug("OpenAPI dup($sig)", \@names);
-    shift @names; # keep the first i.e. shortest
-    push @dups, @names;
+    my $real = shift @names; # keep the first i.e. shortest
+    $dup2real{$_} = $real for @names;
   }
-  DEBUG and _debug("dup ret", \@dups);
-  @dups;
+  DEBUG and _debug("dup ret", \%dup2real);
+  \%dup2real;
 }
 
 # sorted list of all propnames
@@ -602,8 +602,8 @@ sub parse {
   %defs = %{ _merge_allOf(\%defs) };
   my $def2mask = defs2mask(\%defs);
   my $reffed = _find_referenced(\%defs);
-  my @dup = _strip_dup(\%defs, $def2mask, $reffed);
-  delete @defs{@dup};
+  my $dup2real = _strip_dup(\%defs, $def2mask, $reffed);
+  delete @defs{keys %$dup2real};
   my @subset = _strip_subset(\%defs, $def2mask, $reffed);
   delete @defs{@subset};
   %defs = %{ _extract_objects(\%defs) };
