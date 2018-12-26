@@ -39,15 +39,10 @@ tables in an RDBMS with suitable columns and types.
 
 To try to make the data model represent the "real" data, it applies heuristics:
 
-- to remove object definitions that only have one property (which the
-author calls "thin objects"), or that have two properties, one of whose
-names has the substring "count" (case-insensitive).
+- to remove object definitions considered non-fundamental; see
+["definitions\_non\_fundamental"](#definitions_non_fundamental).
 - for definitions that have `allOf`, either merge them together if there
 is a `discriminator`, or absorb properties from referred definitions
-- to find object definitions that have all the same properties as another,
-and remove all but the shortest-named one
-- to remove object definitions whose properties are a strict subset
-of another
 - creates object definitions for any properties that are an object
 - creates object definitions for any properties that are an array of simple
 OpenAPI types (e.g. `string`)
@@ -101,6 +96,26 @@ in the definitions. Not exported. E.g.
       d1 => (1 << 0) | (1 << 1),
       d2 => (1 << 1) | (1 << 2),
     }
+
+## definitions\_non\_fundamental
+
+Given the `definitions` of an OpenAPI spec, will return a hash-ref
+mapping names of definitions considered non-fundamental to a
+value. The value is either the name of another definition that _is_
+fundamental, or or `undef` if it just contains e.g. a string. It will
+instead be a reference to such a value if it is to an array of such.
+
+This may be used e.g. to determine the "real" input or output of an
+OpenAPI operation.
+
+Non-fundamental is determined according to these heuristics:
+
+- object definitions that only have one property (which the author calls
+"thin objects"), or that have two properties, one of whose names has
+the substring "count" (case-insensitive).
+- object definitions that have all the same properties as another, and
+are not the shortest-named one between the two.
+- object definitions whose properties are a strict subset of another.
 
 # OPENAPI SPEC EXTENSIONS
 

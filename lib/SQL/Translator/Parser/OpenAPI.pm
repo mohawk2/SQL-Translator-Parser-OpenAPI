@@ -604,6 +604,16 @@ sub _map_thru {
   \%mapped;
 }
 
+sub definitions_non_fundamental {
+  my ($defs) = @_;
+  my $thin2real = _strip_thin($defs);
+  my $def2mask = defs2mask($defs);
+  my $reffed = _find_referenced($defs, $thin2real);
+  my $dup2real = _strip_dup($defs, $def2mask, $reffed);
+  my $subset2real = _strip_subset($defs, $def2mask, $reffed);
+  _map_thru({ %$thin2real, %$dup2real, %$subset2real });
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -614,12 +624,7 @@ sub parse {
   _remove_fields(\%defs, 'x-artifact');
   _remove_fields(\%defs, 'x-input-only');
   %defs = %{ _merge_allOf(\%defs) };
-  my $thin2real = _strip_thin(\%defs);
-  my $def2mask = defs2mask(\%defs);
-  my $reffed = _find_referenced(\%defs, $thin2real);
-  my $dup2real = _strip_dup(\%defs, $def2mask, $reffed);
-  my $subset2real = _strip_subset(\%defs, $def2mask, $reffed);
-  my $bestmap = _map_thru({ %$thin2real, %$dup2real, %$subset2real });
+  my $bestmap = definitions_non_fundamental(\%defs);
   delete @defs{keys %$bestmap};
   %defs = %{ _extract_objects(\%defs) };
   %defs = %{ _extract_array_simple(\%defs) };
@@ -689,24 +694,13 @@ To try to make the data model represent the "real" data, it applies heuristics:
 
 =item *
 
-to remove object definitions that only have one property (which the
-author calls "thin objects"), or that have two properties, one of whose
-names has the substring "count" (case-insensitive).
+to remove object definitions considered non-fundamental; see
+L</definitions_non_fundamental>.
 
 =item *
 
 for definitions that have C<allOf>, either merge them together if there
 is a C<discriminator>, or absorb properties from referred definitions
-
-=item *
-
-to find object definitions that have all the same properties as another,
-and remove all but the shortest-named one
-
-=item *
-
-to remove object definitions whose properties are a strict subset
-of another
 
 =item *
 
@@ -777,6 +771,38 @@ in the definitions. Not exported. E.g.
     d1 => (1 << 0) | (1 << 1),
     d2 => (1 << 1) | (1 << 2),
   }
+
+=head2 definitions_non_fundamental
+
+Given the C<definitions> of an OpenAPI spec, will return a hash-ref
+mapping names of definitions considered non-fundamental to a
+value. The value is either the name of another definition that I<is>
+fundamental, or or C<undef> if it just contains e.g. a string. It will
+instead be a reference to such a value if it is to an array of such.
+
+This may be used e.g. to determine the "real" input or output of an
+OpenAPI operation.
+
+Non-fundamental is determined according to these heuristics:
+
+=over
+
+=item *
+
+object definitions that only have one property (which the author calls
+"thin objects"), or that have two properties, one of whose names has
+the substring "count" (case-insensitive).
+
+=item *
+
+object definitions that have all the same properties as another, and
+are not the shortest-named one between the two.
+
+=item *
+
+object definitions whose properties are a strict subset of another.
+
+=back
 
 =head1 OPENAPI SPEC EXTENSIONS
 
