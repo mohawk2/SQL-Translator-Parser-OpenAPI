@@ -586,6 +586,24 @@ sub _find_unique_name {
   $id_field;
 }
 
+sub _maybe_deref { ref($_[0]) ? ${$_[0]} : $_[0] }
+
+sub _map_thru {
+  my ($x2y) = @_;
+  DEBUG and _debug("OpenAPI._map_thru 1", $x2y);
+  my %mapped = %$x2y;
+  for my $fake (keys %mapped) {
+    my $real = $mapped{$fake};
+    next if !_maybe_deref $real;
+    $mapped{$_} = (ref $mapped{$_} ? \$real : $real) for
+      grep $fake eq _maybe_deref($mapped{$_}),
+      grep _maybe_deref($mapped{$_}),
+      keys %mapped;
+  }
+  DEBUG and _debug("OpenAPI._map_thru 2", \%mapped);
+  \%mapped;
+}
+
 sub parse {
   my ($tr, $data) = @_;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
@@ -605,6 +623,7 @@ sub parse {
   delete @defs{keys %$dup2real};
   my $subset2real = _strip_subset(\%defs, $def2mask, $reffed);
   delete @defs{keys %$subset2real};
+  my $bestmap = _map_thru({ %$thin2real, %$dup2real, %$subset2real });
   %defs = %{ _extract_objects(\%defs) };
   %defs = %{ _extract_array_simple(\%defs) };
   my (@fixups, %view2real);
