@@ -1,12 +1,11 @@
 package SQL::Translator::Parser::OpenAPI;
-use 5.008001;
 use strict;
 use warnings;
 use JSON::Validator::OpenAPI;
 
 our $VERSION = "0.05";
 use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
-use String::CamelCase qw(camelize decamelize wordsplit);
+use String::CamelCase qw(camelize decamelize);
 use Lingua::EN::Inflect::Number qw(to_PL to_S);
 use SQL::Translator::Schema::Constants;
 use Math::BigInt;
