@@ -8,9 +8,9 @@ use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
 use String::CamelCase qw(camelize decamelize);
 use Lingua::EN::Inflect::Number qw(to_PL to_S);
 use SQL::Translator::Schema::Constants;
-use Math::BigInt;
 use Hash::MoreUtils qw(slice_grep);
 use Hash::Merge qw(merge);
+use Yancy::Util qw(definitions_non_fundamental);
 
 my %TYPE2SQL = (
   integer => 'int',
@@ -37,90 +37,6 @@ sub _debug {
   local ($Data::Dumper::Sortkeys, $Data::Dumper::Indent, $Data::Dumper::Terse);
   $Data::Dumper::Sortkeys = $Data::Dumper::Indent = $Data::Dumper::Terse = 1;
   Test::More::diag("$func: ", Data::Dumper::Dumper([ @_ ]));
-}
-
-# heuristic 1: strip out single-item objects - RHS = ref if array
-sub _strip_thin {
-  my ($defs) = @_;
-  my %thin2real = map {
-    my $theseprops = $defs->{$_}{properties};
-    my @props = grep !/count/i, keys %$theseprops;
-    my $real = @props == 1 ? $theseprops->{$props[0]} : undef;
-    my $is_array = $real = $real->{items} if $real and $real->{type} eq 'array';
-    $real = $real->{'$ref'} if $real;
-    $real = _ref2def($real) if $real;
-    @props == 1 ? ($_ => $is_array ? \$real : $real) : ()
-  } keys %$defs;
-  DEBUG and _debug("OpenAPI._strip_thin", \%thin2real);
-  \%thin2real;
-}
-
-# heuristic 2: find objects with same propnames, drop those with longer names
-sub _strip_dup {
-  my ($defs, $def2mask, $reffed) = @_;
-  my %sig2names;
-  push @{ $sig2names{$def2mask->{$_}} }, $_ for keys %$def2mask;
-  DEBUG and _debug("OpenAPI sig2names", \%sig2names);
-  my @nondups = grep @{ $sig2names{$_} } == 1, keys %sig2names;
-  delete @sig2names{@nondups};
-  my %dup2real;
-  for my $sig (keys %sig2names) {
-    next if grep $reffed->{$_}, @{ $sig2names{$sig} };
-    my @names = sort { (length $a <=> length $b) } @{ $sig2names{$sig} };
-    DEBUG and _debug("OpenAPI dup($sig)", \@names);
-    my $real = shift @names; # keep the first i.e. shortest
-    $dup2real{$_} = $real for @names;
-  }
-  DEBUG and _debug("dup ret", \%dup2real);
-  \%dup2real;
-}
-
-# sorted list of all propnames
-sub _get_all_propnames {
-  my ($defs) = @_;
-  my %allprops;
-  for my $defname (keys %$defs) {
-    $allprops{$_} = 1 for keys %{ $defs->{$defname}{properties} };
-  }
-  [ sort keys %allprops ];
-}
-
-sub defs2mask {
-  my ($defs) = @_;
-  my $allpropnames = _get_all_propnames($defs);
-  my $count = 0;
-  my %prop2count;
-  for my $propname (@$allpropnames) {
-    $prop2count{$propname} = $count;
-    $count++;
-  }
-  my %def2mask;
-  for my $defname (keys %$defs) {
-    $def2mask{$defname} ||= Math::BigInt->new(0);
-    $def2mask{$defname} |= (Math::BigInt->new(1) << $prop2count{$_})
-      for keys %{ $defs->{$defname}{properties} };
-  }
-  \%def2mask;
-}
-
-# heuristic 3: find objects with set of propnames that is subset of
-#   another object's propnames
-sub _strip_subset {
-  my ($defs, $def2mask, $reffed) = @_;
-  my %subset2real;
-  for my $defname (keys %$defs) {
-    DEBUG and _debug("_strip_subset $defname maybe", $reffed);
-    next if $reffed->{$defname};
-    my $thismask = $def2mask->{$defname};
-    for my $supersetname (grep $_ ne $defname, keys %$defs) {
-      my $supermask = $def2mask->{$supersetname};
-      next unless ($thismask & $supermask) == $thismask;
-      DEBUG and _debug("mask $defname subset $supersetname");
-      $subset2real{$defname} = $supersetname;
-    }
-  }
-  DEBUG and _debug("subset ret", \%subset2real);
-  \%subset2real;
 }
 
 sub _prop2sqltype {
@@ -308,24 +224,6 @@ sub _merge_allOf {
   }
   DEBUG and _debug('OpenAPI._merge_allOf(end)', \%newdefs);
   \%newdefs;
-}
-
-sub _find_referenced {
-  my ($defs, $thin2real) = @_;
-  DEBUG and _debug('OpenAPI._find_referenced', $defs);
-  my %reffed;
-  for my $defname (grep !$thin2real->{$_}, keys %$defs) {
-    my $theseprops = $defs->{$defname}{properties} || {};
-    for my $propname (keys %$theseprops) {
-      if (my $ref = $theseprops->{$propname}{'$ref'}
-        || ($theseprops->{$propname}{items} && $theseprops->{$propname}{items}{'$ref'})
-      ) {
-        $reffed{ _ref2def($ref) } = 1;
-      }
-    }
-  }
-  DEBUG and _debug('OpenAPI._find_referenced(end)', \%reffed);
-  \%reffed;
 }
 
 sub _extract_objects {
@@ -614,34 +512,6 @@ sub _find_unique_name {
   $id_field;
 }
 
-sub _maybe_deref { ref($_[0]) ? ${$_[0]} : $_[0] }
-
-sub _map_thru {
-  my ($x2y) = @_;
-  DEBUG and _debug("OpenAPI._map_thru 1", $x2y);
-  my %mapped = %$x2y;
-  for my $fake (keys %mapped) {
-    my $real = $mapped{$fake};
-    next if !_maybe_deref $real;
-    $mapped{$_} = (ref $mapped{$_} ? \$real : $real) for
-      grep $fake eq _maybe_deref($mapped{$_}),
-      grep _maybe_deref($mapped{$_}),
-      keys %mapped;
-  }
-  DEBUG and _debug("OpenAPI._map_thru 2", \%mapped);
-  \%mapped;
-}
-
-sub definitions_non_fundamental {
-  my ($defs) = @_;
-  my $thin2real = _strip_thin($defs);
-  my $def2mask = defs2mask($defs);
-  my $reffed = _find_referenced($defs, $thin2real);
-  my $dup2real = _strip_dup($defs, $def2mask, $reffed);
-  my $subset2real = _strip_subset($defs, $def2mask, $reffed);
-  _map_thru({ %$thin2real, %$dup2real, %$subset2real });
-}
-
 sub parse {
   my ($tr, $data) = @_;
   my $args = $tr->parser_args;
@@ -724,7 +594,7 @@ To try to make the data model represent the "real" data, it applies heuristics:
 =item *
 
 to remove object definitions considered non-fundamental; see
-L</definitions_non_fundamental>.
+L<Yancy::Util/definitions_non_fundamental>.
 
 =item *
 
@@ -773,69 +643,6 @@ default, the tables will be named after simply the definitions.
 Standard as per L<SQL::Translator::Parser>. The input $data is a scalar
 that can be understood as a L<JSON::Validator
 specification|JSON::Validator/schema>.
-
-=head2 defs2mask
-
-Given a hashref that is a JSON pointer to an OpenAPI spec's
-C</definitions>, returns a hashref that maps each definition name to a
-bitmask. The bitmask is set from each property name in that definition,
-according to its order in the complete sorted list of all property names
-in the definitions. Not exported. E.g.
-
-  # properties:
-  my $defs = {
-    d1 => {
-      properties => {
-        p1 => 'string',
-        p2 => 'string',
-      },
-    },
-    d2 => {
-      properties => {
-        p2 => 'string',
-        p3 => 'string',
-      },
-    },
-  };
-  my $mask = SQL::Translator::Parser::OpenAPI::defs2mask($defs);
-  # all prop names, sorted: qw(p1 p2 p3)
-  # $mask:
-  {
-    d1 => (1 << 0) | (1 << 1),
-    d2 => (1 << 1) | (1 << 2),
-  }
-
-=head2 definitions_non_fundamental
-
-Given the C<definitions> of an OpenAPI spec, will return a hash-ref
-mapping names of definitions considered non-fundamental to a
-value. The value is either the name of another definition that I<is>
-fundamental, or or C<undef> if it just contains e.g. a string. It will
-instead be a reference to such a value if it is to an array of such.
-
-This may be used e.g. to determine the "real" input or output of an
-OpenAPI operation.
-
-Non-fundamental is determined according to these heuristics:
-
-=over
-
-=item *
-
-object definitions that only have one property (which the author calls
-"thin objects"), or that have two properties, one of whose names has
-the substring "count" (case-insensitive).
-
-=item *
-
-object definitions that have all the same properties as another, and
-are not the shortest-named one between the two.
-
-=item *
-
-object definitions whose properties are a strict subset of another.
-
-=back
 
 =head1 OPENAPI SPEC EXTENSIONS
 

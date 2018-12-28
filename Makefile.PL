@@ -24,9 +24,9 @@ WriteMakefile(
     'String::CamelCase' => '0',
     'SQL::Translator::Schema::Constants' => 0,
     'Lingua::EN::Inflect::Number' => '0',
-    'Math::BigInt' => '0',
     'Hash::MoreUtils' => '0.06',
     'Hash::Merge' => '0',
+    'Yancy::Util' => '1.019',
   },
   clean => { FILES => 'SQL-Translator-Parser-OpenAPI-*' },
   META_MERGE => {
