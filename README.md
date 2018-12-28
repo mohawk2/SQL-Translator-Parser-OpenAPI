@@ -56,7 +56,11 @@ creates many-to-many tables for any two-way array relationships
 
 # ARGUMENTS
 
-None at present.
+## snake\_case
+
+If true, will create table names that are not the definition names, but
+instead the pluralised snake\_case version, in line with SQL convention. By
+default, the tables will be named after simply the definitions.
 
 # PACKAGE FUNCTIONS
 

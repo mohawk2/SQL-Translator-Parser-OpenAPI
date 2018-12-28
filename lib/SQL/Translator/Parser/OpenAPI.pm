@@ -162,7 +162,9 @@ sub _make_pk {
 }
 
 sub _def2tablename {
-  to_PL decamelize $_[0];
+  my ($def, $args) = @_;
+  return $def unless $args->{snake_case};
+  to_PL decamelize $def;
 }
 
 sub _ref2def {
@@ -201,12 +203,12 @@ sub _fk_hookup {
 }
 
 sub _def2table {
-  my ($name, $def, $schema, $m2m, $view2real, $def2relationalid) = @_;
+  my ($name, $def, $schema, $m2m, $view2real, $def2relationalid, $args) = @_;
   my $props = $def->{properties};
-  my $tname = _def2tablename($name);
+  my $tname = _def2tablename($name, $args);
   DEBUG and _debug("_def2table($name)($tname)($m2m)", $props);
   if (my $view_of = $def->{'x-view-of'}) {
-    my $target_table = _def2tablename($view_of);
+    my $target_table = _def2tablename($view_of, $args);
     $view2real->{$tname} = $target_table;
     return (undef, []);
   }
@@ -229,7 +231,7 @@ sub _def2table {
       push @fixups, {
         from => $tname,
         fromkey => $propname . '_id',
-        to => _def2tablename($refname),
+        to => _def2tablename($refname, $args),
         tokey => $def2relationalid->{$refname},
         required => $prop2required{$propname},
         type => 'one',
@@ -237,9 +239,15 @@ sub _def2table {
     } elsif (($thisprop->{type} // '') eq 'array') {
       if (my $ref = $thisprop->{items}{'$ref'}) {
         my $refname = _ref2def($ref);
+        my $fromkey;
+        if ($args->{snake_case}) {
+          $fromkey = to_S($propname) . "_id";
+        } else {
+          $fromkey = $propname . "_id";
+        }
         push @fixups, {
-          from => _def2tablename($refname),
-          fromkey => to_S($propname) . "_id",
+          from => _def2tablename($refname, $args),
+          fromkey => $fromkey,
           to => $tname,
           tokey => $relational_id_field,
           required => 1,
@@ -321,7 +329,7 @@ sub _find_referenced {
 }
 
 sub _extract_objects {
-  my ($defs) = @_;
+  my ($defs, $args) = @_;
   DEBUG and _debug('OpenAPI._extract_objects', $defs);
   my %newdefs = %$defs;
   for my $defname (sort keys %$defs) {
@@ -340,7 +348,12 @@ sub _extract_objects {
       } else {
         next;
       }
-      my $newtype = join '', map camelize($_), $defname, $propname;
+      my $newtype;
+      if ($args->{snake_case}) {
+        $newtype = join '', map camelize($_), $defname, $propname;
+      } else {
+        $newtype = join '_', $defname, $propname;
+      }
       $newdefs{$newtype} = { %$ref };
       %$ref = ('$ref' => "#/definitions/$newtype");
     }
@@ -350,7 +363,7 @@ sub _extract_objects {
 }
 
 sub _extract_array_simple {
-  my ($defs) = @_;
+  my ($defs, $args) = @_;
   DEBUG and _debug('OpenAPI._extract_array_simple', $defs);
   my %newdefs = %$defs;
   for my $defname (sort keys %$defs) {
@@ -361,7 +374,12 @@ sub _extract_array_simple {
       next unless
         $thisprop->{items} && ($thisprop->{items}{type} // '') ne 'object';
       my $ref = $thisprop->{items};
-      my $newtype = join '', map camelize($_), $defname, $propname;
+      my $newtype;
+      if ($args->{snake_case}) {
+        $newtype = join '', map camelize($_), $defname, $propname;
+      } else {
+        $newtype = join '_', $defname, $propname;
+      }
       $newdefs{$newtype} = {
         type => 'object',
         properties => {
@@ -454,15 +472,19 @@ sub _absorb_nonobject {
 }
 
 sub _tuple2name {
-  my ($fixup) = @_;
+  my ($fixup, $args) = @_;
   my $from = $fixup->{from};
   my $fromkey = $fixup->{fromkey};
   $fromkey =~ s#_id$##;
-  camelize join '_', map to_S($_), $from, $fromkey;
+  if ($args->{snake_case}) {
+    camelize join '_', map to_S($_), $from, $fromkey;
+  } else {
+    join '_', $from, $fromkey;
+  }
 }
 
 sub _make_many2many {
-  my ($fixups, $schema, $def2relationalid) = @_;
+  my ($fixups, $schema, $def2relationalid, $args) = @_;
   DEBUG and _debug("_make_many2many", $fixups);
   my @manyfixups = grep $_->{type} eq 'many', @$fixups;
   my %from_tos;
@@ -477,7 +499,7 @@ sub _make_many2many {
       for my $fixup (@{ $from_tos{$from}{$to} }) {
         for my $other (@{ $to_froms{$from}{$to} }) {
           my ($f1, $f2) = sort { $a->{from} cmp $b->{from} } $fixup, $other;
-          $m2m{_tuple2name($f1)}{_tuple2name($f2)} = [ $f1, $f2 ];
+          $m2m{_tuple2name($f1, $args)}{_tuple2name($f2, $args)} = [ $f1, $f2 ];
           delete $ref2nonm2mfixup{$_} for $f1, $f2;
         }
       }
@@ -494,8 +516,14 @@ sub _make_many2many {
         $f1_fromkey =~ s#_id$#_to_id#;
         $f2_fromkey =~ s#_id$#_from_id#;
       }
+      my $new_table = $n1.$n2;
+      if ($args->{snake_case}) {
+        $new_table = $n1.$n2;
+      } else {
+        $new_table = join '_', $n1, $n2;
+      }
       my ($table) = _def2table(
-        $n1.$n2,
+        $new_table,
         {
           type => 'object',
           properties => {
@@ -511,6 +539,7 @@ sub _make_many2many {
         1,
         undef,
         $def2relationalid,
+        $args,
       );
       push @replacefixups, {
         to => $f1->{from},
@@ -615,6 +644,7 @@ sub definitions_non_fundamental {
 
 sub parse {
   my ($tr, $data) = @_;
+  my $args = $tr->parser_args;
   my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
   my %defs = %{ $openapi_schema->get("/definitions") };
   DEBUG and _debug('OpenAPI.definitions', \%defs);
@@ -625,17 +655,17 @@ sub parse {
   %defs = %{ _merge_allOf(\%defs) };
   my $bestmap = definitions_non_fundamental(\%defs);
   delete @defs{keys %$bestmap};
-  %defs = %{ _extract_objects(\%defs) };
-  %defs = %{ _extract_array_simple(\%defs) };
+  %defs = %{ _extract_objects(\%defs, $args) };
+  %defs = %{ _extract_array_simple(\%defs, $args) };
   my (@fixups, %view2real);
   %defs = %{ _fixup_addProps(\%defs) };
   %defs = %{ _absorb_nonobject(\%defs) };
   my $def2relationalid = _decide_id_fields(\%defs);
   for my $name (sort keys %defs) {
-    my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema, 0, \%view2real, $def2relationalid);
+    my ($table, $thesefixups) = _def2table($name, $defs{$name}, $schema, 0, \%view2real, $def2relationalid, $args);
     push @fixups, @$thesefixups;
   }
-  my ($newfixups) = _make_many2many(\@fixups, $schema, $def2relationalid);
+  my ($newfixups) = _make_many2many(\@fixups, $schema, $def2relationalid, $args);
   for my $fixup (@$newfixups) {
     _fk_hookup($schema, @{$fixup}{qw(from fromkey to tokey required)}, \%view2real);
   }
@@ -730,7 +760,11 @@ creates many-to-many tables for any two-way array relationships
 
 =head1 ARGUMENTS
 
-None at present.
+=head2 snake_case
+
+If true, will create table names that are not the definition names, but
+instead the pluralised snake_case version, in line with SQL convention. By
+default, the tables will be named after simply the definitions.
 
 =head1 PACKAGE FUNCTIONS
 

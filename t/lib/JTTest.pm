@@ -29,6 +29,7 @@ sub import {
 }
 
 sub run_test {
+  my ($snake_case) = @_;
   (my $file = $0) =~ s#schema\.t$#corpus.json#;
   $file =~ s#json$#yml# if !-f $file;
   die "$file: $!" if !-f $file;
@@ -48,6 +49,7 @@ sub run_test {
 
   my $translator = SQL::Translator->new;
   $translator->parser("OpenAPI");
+  $translator->parser_args(snake_case => $snake_case);
   $translator->producer("SQLite");
 
   my $got = $translator->translate(data => $openapi_schema);
@@ -58,7 +60,7 @@ sub run_test {
   } else {
     diag $translator->error;
   }
-  is_deeply_snapshot $got, 'schema';
+  is_deeply_snapshot $got, ($snake_case ? 'schema' : 'schema_camel');
 }
 
 1;
