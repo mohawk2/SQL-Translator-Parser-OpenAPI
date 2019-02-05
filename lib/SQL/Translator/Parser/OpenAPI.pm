@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use JSON::Validator::OpenAPI::Mojolicious;
 
-our $VERSION = "0.06";
+our $VERSION = "0.07";
 use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
 use String::CamelCase qw(camelize decamelize);
 use Lingua::EN::Inflect::Number qw(to_PL to_S);

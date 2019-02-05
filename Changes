@@ -1,5 +1,8 @@
 Revision history for Perl extension SQL-Translator-Parser-OpenAPI
 
+0.07	Tue  5 Feb 05:27:26 GMT 2019
+ - update to dep on JSON::Validator::OpenAPI::Mojolicious as actually use that
+
 0.06	Tue  5 Feb 05:13:26 GMT 2019
  - doc tweaks
  - add x-id-field
