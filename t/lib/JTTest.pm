@@ -34,8 +34,8 @@ sub run_test {
   $file =~ s#json$#yml# if !-f $file;
   die "$file: $!" if !-f $file;
 
-  require JSON::Validator::OpenAPI; # loads JSON and YAML loaders
-  my $openapi_schema = JSON::Validator::OpenAPI->new->schema($file)->schema->data;
+  require JSON::Validator::OpenAPI::Mojolicious; # loads JSON and YAML loaders
+  my $openapi_schema = JSON::Validator::OpenAPI::Mojolicious->new->schema($file)->schema->data;
 
   my $overlay = "$file.overlay";
   if (-f $overlay) {

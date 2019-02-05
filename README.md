@@ -32,7 +32,7 @@ SQL::Translator::Parser::OpenAPI - convert OpenAPI schema to SQL::Translator sch
 # DESCRIPTION
 
 This module implements a [SQL::Translator::Parser](https://metacpan.org/pod/SQL::Translator::Parser) to convert
-a [JSON::Validator::OpenAPI](https://metacpan.org/pod/JSON::Validator::OpenAPI) specification to a [SQL::Translator::Schema](https://metacpan.org/pod/SQL::Translator::Schema).
+a [JSON::Validator::OpenAPI::Mojolicious](https://metacpan.org/pod/JSON::Validator::OpenAPI::Mojolicious) specification to a [SQL::Translator::Schema](https://metacpan.org/pod/SQL::Translator::Schema).
 
 It uses, from the given API spec, the given "definitions" to generate
 tables in an RDBMS with suitable columns and types.
@@ -185,4 +185,4 @@ it under the same terms as Perl itself.
 
 [SQL::Translator::Parser](https://metacpan.org/pod/SQL::Translator::Parser).
 
-[JSON::Validator::OpenAPI](https://metacpan.org/pod/JSON::Validator::OpenAPI).
+[JSON::Validator::OpenAPI::Mojolicious](https://metacpan.org/pod/JSON::Validator::OpenAPI::Mojolicious).

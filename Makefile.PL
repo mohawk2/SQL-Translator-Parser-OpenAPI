@@ -20,7 +20,7 @@ WriteMakefile(
   },
   PREREQ_PM => {
     'SQL::Translator' => '0.11024', # 0.11021 gives YAML diffs on "comments"
-    'JSON::Validator' => '2.01', # fqn bundle fix
+    'JSON::Validator' => '3.05', # after pointless zapping of ::OpenAPI
     'String::CamelCase' => '0',
     'SQL::Translator::Schema::Constants' => 0,
     'Lingua::EN::Inflect::Number' => '0',

@@ -1,7 +1,7 @@
 package SQL::Translator::Parser::OpenAPI;
 use strict;
 use warnings;
-use JSON::Validator::OpenAPI;
+use JSON::Validator::OpenAPI::Mojolicious;
 
 our $VERSION = "0.05";
 use constant DEBUG => $ENV{SQLTP_OPENAPI_DEBUG};
@@ -645,7 +645,7 @@ sub definitions_non_fundamental {
 sub parse {
   my ($tr, $data) = @_;
   my $args = $tr->parser_args;
-  my $openapi_schema = JSON::Validator::OpenAPI->new->schema($data)->schema;
+  my $openapi_schema = JSON::Validator::OpenAPI::Mojolicious->new->schema($data)->schema;
   my %defs = %{ $openapi_schema->get("/definitions") };
   DEBUG and _debug('OpenAPI.definitions', \%defs);
   my $schema = $tr->schema;
@@ -712,7 +712,7 @@ SQL::Translator::Parser::OpenAPI - convert OpenAPI schema to SQL::Translator sch
 =head1 DESCRIPTION
 
 This module implements a L<SQL::Translator::Parser> to convert
-a L<JSON::Validator::OpenAPI> specification to a L<SQL::Translator::Schema>.
+a L<JSON::Validator::OpenAPI::Mojolicious> specification to a L<SQL::Translator::Schema>.
 
 It uses, from the given API spec, the given "definitions" to generate
 tables in an RDBMS with suitable columns and types.
@@ -901,7 +901,7 @@ L<SQL::Translator>.
 
 L<SQL::Translator::Parser>.
 
-L<JSON::Validator::OpenAPI>.
+L<JSON::Validator::OpenAPI::Mojolicious>.
 
 =cut
 
