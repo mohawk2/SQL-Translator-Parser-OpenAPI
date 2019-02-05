@@ -31,6 +31,7 @@ my %SQL2TYPE = reverse %TYPE2SQL; # unreliable order but ok as still reversible
 
 # from GraphQL::Debug
 sub _debug {
+  # uncoverable subroutine
   my $func = shift;
   require Data::Dumper;
   require Test::More;
