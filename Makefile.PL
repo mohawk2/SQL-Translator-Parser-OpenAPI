@@ -20,6 +20,7 @@ WriteMakefile(
   },
   PREREQ_PM => {
     'SQL::Translator' => '0.11024', # 0.11021 gives YAML diffs on "comments"
+    'JSON::Validator' => '4.13', # J:V:Ref with CLEAR method
     'JSON::Validator::OpenAPI::Mojolicious' => '0', # after pointless zapping of ::OpenAPI from J::V
     'String::CamelCase' => '0',
     'SQL::Translator::Schema::Constants' => 0,
